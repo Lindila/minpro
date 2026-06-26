@@ -1,0 +1,5 @@
+export const DOMAINS       = ['Agriculture','Santé','Géologie','Cartographie','Radioprotection','Matériaux','Éducation','Technologie','Autre']
+export const STATUSES      = ['En préparation','En cours','Suspendu','Clôturé','Archivé']
+export const EXPENSE_CATS  = ['Personnel','Équipement','Transport','Réactifs','Formation','Logiciels','Matières premières','Divers']
+export const DOC_TYPES     = ['rapport','protocole','budget','contrat','autre']
+export const GRADES        = ['Attaché de recherche','Chercheur','Maître de recherche','Directeur de recherche','Chercheur hors classe']
