@@ -129,13 +129,6 @@ const login = async (req, res) => {
     if (!match)
       return res.status(401).json({ success: false, message: 'Identifiants incorrects' });
 
-    if (!user.isVerified)
-      return res.status(403).json({
-        success: false,
-        needsVerification: true,
-        message: 'Veuillez vérifier votre email avant de vous connecter.',
-      });
-
     user.lastLogin = new Date();
     await user.save({ validateBeforeSave: false });
 
