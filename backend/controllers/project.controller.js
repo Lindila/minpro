@@ -1,4 +1,5 @@
 const Project = require('../models/Project');
+const { log: logActivity } = require('./activity.controller');
 
 // Filtre selon le rôle de l'utilisateur connecté
 const buildFilter = (user) => {
@@ -58,6 +59,7 @@ const createProject = async (req, res) => {
     const code = `P${String(count + 1).padStart(3, '0')}`;
     const project = await Project.create({ ...req.body, code, creePar: req.user._id });
     await project.populate(POPULATE_LIGHT);
+    logActivity('project_created', req.user._id, project._id, `Projet "${project.intitule}" créé`);
     res.status(201).json({ success: true, data: project });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
@@ -86,6 +88,7 @@ const addMilestone = async (req, res) => {
     project.milestones.push({ ...req.body, statut: 'pending' });
     await project.save();
     await project.populate('milestones.responsable', 'prenom nom');
+    logActivity('milestone_added', req.user._id, project._id, `Jalon "${req.body.nom}" ajouté`);
     res.status(201).json({ success: true, data: project.milestones });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
@@ -132,6 +135,7 @@ const addExpense = async (req, res) => {
     project.depenses.push({ ...req.body, saisiePar: req.user._id });
     project.budgetDepense += Number(req.body.montant);
     await project.save();
+    logActivity('expense_added', req.user._id, project._id, `Dépense de ${req.body.montant} FCFA ajoutée`);
     res.status(201).json({ success: true, data: project.depenses, budgetDepense: project.budgetDepense });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
@@ -164,6 +168,7 @@ const addDocument = async (req, res) => {
     project.documents.push({ ...req.body, uploadePar: req.user._id, statut: 'pending' });
     await project.save();
     await project.populate('documents.uploadePar', 'prenom nom');
+    logActivity('document_uploaded', req.user._id, project._id, `Document "${req.body.nom}" uploadé`);
     res.status(201).json({ success: true, data: project.documents });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
@@ -181,6 +186,7 @@ const validateDocument = async (req, res) => {
     doc.valideePar = req.user._id;
     doc.dateValidation = new Date();
     await project.save();
+    logActivity('document_validated', req.user._id, project._id, `Document "${doc.nom}" validé`);
     res.json({ success: true, data: project.documents });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });

@@ -19,5 +19,8 @@ export const deleteExpense  = (id, expId)      => api.delete(`/projects/${id}/de
 
 // Documents
 export const addDocument    = (id, data)       => api.post(`/projects/${id}/documents`, data)
+
+// Activités
+export const getActivities  = (limit = 10)     => api.get('/activities', { params: { limit } })
 export const validateDoc    = (id, docId)      => api.put(`/projects/${id}/documents/${docId}/validate`)
 export const rejectDoc      = (id, docId, data)=> api.put(`/projects/${id}/documents/${docId}/reject`, data)

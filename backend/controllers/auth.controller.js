@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { log: logActivity } = require('./activity.controller');
 
 const generateToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE || '7d' });
@@ -31,6 +32,7 @@ const register = async (req, res) => {
     const token = generateToken(user._id);
     const populated = await User.findById(user._id).populate('institute', 'sigle nom code');
 
+    logActivity('user_registered', user._id, null, `${user.prenom} ${user.nom} s'est inscrit`);
     res.status(201).json({ success: true, token, user: populated });
   } catch (err) {
     console.error(err);
@@ -62,6 +64,7 @@ const login = async (req, res) => {
     await user.save({ validateBeforeSave: false });
 
     const token = generateToken(user._id);
+    logActivity('user_login', user._id, null, `${user.prenom} ${user.nom} s'est connecté`);
     res.json({ success: true, token, user });
   } catch (err) {
     console.error(err);

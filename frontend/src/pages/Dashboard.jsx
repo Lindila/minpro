@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getStats, getProjects, getAlerts } from '../api/project.api'
+import { getStats, getProjects, getAlerts, getActivities as fetchActivities } from '../api/project.api'
 import { useApp }  from '../context/AppContext'
 import { useAuth } from '../context/AuthContext'
 import Card        from '../components/ui/Card.jsx'
@@ -74,20 +74,22 @@ function ActivityItem({ icon, iconBg, iconColor, title, desc, time }) {
 }
 
 export default function Dashboard() {
-  const [stats,    setStats]    = useState(null)
-  const [projects, setProjects] = useState([])
-  const [alerts,   setAlerts]   = useState([])
-  const [loading,  setLoading]  = useState(true)
+  const [stats,      setStats]      = useState(null)
+  const [projects,   setProjects]   = useState([])
+  const [alerts,     setAlerts]     = useState([])
+  const [activities, setActivities] = useState([])
+  const [loading,    setLoading]    = useState(true)
   const { lang } = useApp()
   const { user }  = useAuth()
   const navigate  = useNavigate()
 
   useEffect(() => {
-    Promise.all([getStats(), getProjects(), getAlerts()])
-      .then(([s, p, a]) => {
+    Promise.all([getStats(), getProjects(), getAlerts(), fetchActivities(10)])
+      .then(([s, p, a, act]) => {
         setStats(s.data.data)
         setProjects(p.data.data)
         setAlerts(a.data.data)
+        setActivities(act.data.data)
       })
       .catch(console.error)
       .finally(() => setLoading(false))
@@ -119,13 +121,40 @@ export default function Dashboard() {
     day: 'numeric', month: 'long', year: 'numeric',
   })
 
-  const activities = [
-    { icon: 'file-text',    iconBg: '#DBEAFE', iconColor: '#2563EB', title: lang === 'fr' ? 'Rapport soumis' : 'Report submitted',       desc: lang === 'fr' ? 'Un rapport a été soumis pour validation.' : 'A report was submitted for review.', time: lang === 'fr' ? 'Il y a 5 min' : '5 min ago' },
-    { icon: 'circle-check', iconBg: '#DCFCE7', iconColor: '#16A34A', title: lang === 'fr' ? 'Projet approuvé' : 'Project approved',       desc: lang === 'fr' ? 'Un projet a été approuvé et activé.' : 'A project was approved.',                time: lang === 'fr' ? 'Hier' : 'Yesterday' },
-    { icon: 'user-plus',    iconBg: '#F3E8FF', iconColor: '#7C3AED', title: lang === 'fr' ? 'Nouveau chercheur' : 'New researcher',       desc: lang === 'fr' ? "Un chercheur s'est inscrit." : 'A researcher signed up.',                        time: lang === 'fr' ? '2 jours' : '2 days' },
-    { icon: 'coins',        iconBg: '#FEF9C3', iconColor: '#854D0E', title: lang === 'fr' ? 'Budget mis à jour' : 'Budget updated',       desc: lang === 'fr' ? 'Le budget a été mis à jour.' : 'Budget was updated.',                            time: lang === 'fr' ? '3 jours' : '3 days' },
-    { icon: 'clock',        iconBg: '#FEE2E2', iconColor: '#DC2626', title: lang === 'fr' ? 'Échéance à venir' : 'Upcoming deadline',     desc: lang === 'fr' ? 'Un projet arrive à échéance dans 10 jours.' : 'A project deadline in 10 days.',   time: lang === 'fr' ? '5 jours' : '5 days' },
-  ]
+  const ACTIVITY_META = {
+    project_created:      { icon: 'folder-plus',   iconBg: '#DCFCE7', iconColor: '#16A34A' },
+    project_updated:      { icon: 'edit',           iconBg: '#DBEAFE', iconColor: '#2563EB' },
+    milestone_added:      { icon: 'flag',           iconBg: '#FEF9C3', iconColor: '#854D0E' },
+    milestone_done:       { icon: 'circle-check',   iconBg: '#DCFCE7', iconColor: '#16A34A' },
+    expense_added:        { icon: 'coins',          iconBg: '#FEF9C3', iconColor: '#854D0E' },
+    document_uploaded:    { icon: 'file-upload',    iconBg: '#DBEAFE', iconColor: '#2563EB' },
+    document_validated:   { icon: 'file-check',     iconBg: '#DCFCE7', iconColor: '#16A34A' },
+    document_rejected:    { icon: 'file-x',         iconBg: '#FEE2E2', iconColor: '#DC2626' },
+    user_registered:      { icon: 'user-plus',      iconBg: '#F3E8FF', iconColor: '#7C3AED' },
+    user_login:           { icon: 'login',          iconBg: '#E0E7FF', iconColor: '#4F46E5' },
+    budget_updated:       { icon: 'wallet',         iconBg: '#FEF9C3', iconColor: '#854D0E' },
+  }
+
+  const timeAgo = (date) => {
+    const diff = Math.floor((Date.now() - new Date(date)) / 1000)
+    if (diff < 60)    return lang === 'fr' ? "À l'instant" : 'Just now'
+    if (diff < 3600)  return `${Math.floor(diff / 60)} min`
+    if (diff < 86400) return `${Math.floor(diff / 3600)}h`
+    const days = Math.floor(diff / 86400)
+    if (days === 1)   return lang === 'fr' ? 'Hier' : 'Yesterday'
+    return `${days} ${lang === 'fr' ? 'jours' : 'days'}`
+  }
+
+  const activityItems = activities.map(a => {
+    const meta = ACTIVITY_META[a.type] || { icon: 'activity', iconBg: '#F3F4F6', iconColor: '#6B7280' }
+    const userName = a.user ? `${a.user.prenom} ${a.user.nom}` : ''
+    return {
+      ...meta,
+      title: a.details || a.type,
+      desc: userName + (a.project ? ` — ${a.project.intitule}` : ''),
+      time: timeAgo(a.createdAt),
+    }
+  })
 
   return (
     <div>
@@ -215,7 +244,12 @@ export default function Dashboard() {
               {lang === 'fr' ? 'Voir tout' : 'See all'}
             </span>
           </div>
-          {activities.map((a, i) => <ActivityItem key={i} {...a} />)}
+          {activityItems.length === 0 ? (
+            <div style={{ padding: '24px 0', textAlign: 'center', color: '#9CA3AF', fontSize: 12 }}>
+              <i className="ti ti-activity" style={{ fontSize: 28, display: 'block', marginBottom: 6 }} />
+              {lang === 'fr' ? 'Aucune activité récente' : 'No recent activity'}
+            </div>
+          ) : activityItems.map((a, i) => <ActivityItem key={i} {...a} />)}
         </Card>
       </div>
 
