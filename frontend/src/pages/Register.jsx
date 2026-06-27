@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { Link } from 'react-router-dom'
+import { register as registerApi } from '../api/auth.api'
 import { getInstitutes } from '../api/institute.api'
 
 const ROLES = [
@@ -107,9 +107,8 @@ export default function Register() {
   const [showConfirm, setShowConfirm] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [emailSent, setEmailSent] = useState(false)
   const [lang, setLang] = useState('fr')
-  const { register } = useAuth()
-  const navigate = useNavigate()
 
   useEffect(() => {
     getInstitutes().then(r => setInstitutes(r.data.data)).catch(() => {})
@@ -136,12 +135,12 @@ export default function Register() {
 
     setLoading(true)
     try {
-      const user = await register({
+      await registerApi({
         prenom: form.prenom, nom: form.nom, email: form.email,
         password: form.password, role: form.role,
         institute: form.institute || undefined,
       })
-      navigate(REDIRECT[user.role] || '/dashboard')
+      setEmailSent(true)
     } catch (err) {
       setError(err.response?.data?.message || (lang === 'fr' ? "Erreur lors de l'inscription" : 'Registration failed'))
     } finally { setLoading(false) }
@@ -153,6 +152,27 @@ export default function Register() {
     <div className="auth-page">
       {/* ── Left Panel : Form ── */}
       <div className="auth-form-panel">
+        {emailSent ? (
+          <div style={{ textAlign: 'center', padding: '20px 0' }}>
+            <div style={{ width: 64, height: 64, borderRadius: 16, background: '#DCFCE7', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+              <i className="ti ti-mail-check" style={{ fontSize: 32, color: '#16A34A' }} />
+            </div>
+            <h2 style={{ fontSize: 20, fontWeight: 700, color: '#111827', margin: '0 0 10px' }}>
+              {lang === 'fr' ? 'Vérifiez votre email !' : 'Check your email!'}
+            </h2>
+            <p style={{ color: '#6B7280', fontSize: 14, lineHeight: 1.6, marginBottom: 6 }}>
+              {lang === 'fr'
+                ? <>Un lien de vérification a été envoyé à <strong>{form.email}</strong>. Cliquez dessus pour activer votre compte.</>
+                : <>A verification link has been sent to <strong>{form.email}</strong>. Click it to activate your account.</>}
+            </p>
+            <p style={{ color: '#9CA3AF', fontSize: 12, marginBottom: 24 }}>
+              {lang === 'fr' ? "Pensez à vérifier vos spams." : 'Check your spam folder too.'}
+            </p>
+            <Link to="/login" style={{ display: 'inline-block', background: '#1B4D3E', color: 'white', padding: '12px 28px', borderRadius: 12, fontWeight: 600, fontSize: 14, textDecoration: 'none' }}>
+              {lang === 'fr' ? 'Aller à la connexion' : 'Go to login'}
+            </Link>
+          </div>
+        ) : (<>
         <div className="auth-brand">
           <div className="auth-brand-icon">
             <i className="ti ti-layers-intersect" style={{ fontSize: 24, color: '#1B4D3E' }} />
@@ -237,6 +257,7 @@ export default function Register() {
           {lang === 'fr' ? 'Vous avez déjà un compte ? ' : 'Already have an account? '}
           <Link to="/login"><strong>{lang === 'fr' ? 'Se connecter' : 'Sign in'}</strong></Link>
         </div>
+        </>)}
       </div>
 
       {/* ── Right Panel : Branding ── */}

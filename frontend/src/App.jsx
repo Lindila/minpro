@@ -5,6 +5,9 @@ import PrivateRoute     from './components/layout/PrivateRoute.jsx'
 import Layout           from './components/layout/Layout.jsx'
 import Login            from './pages/Login.jsx'
 import Register         from './pages/Register.jsx'
+import VerifyEmail      from './pages/VerifyEmail.jsx'
+import ForgotPassword   from './pages/ForgotPassword.jsx'
+import ResetPassword    from './pages/ResetPassword.jsx'
 import Dashboard        from './pages/Dashboard.jsx'
 import Projects         from './pages/Projects.jsx'
 import ProjectDetail    from './pages/ProjectDetail.jsx'
@@ -18,6 +21,9 @@ export default function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verify-email/:token" element={<VerifyEmail />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
             <Route index element={<Navigate to="/dashboard" replace />} />
             <Route path="dashboard"       element={<Dashboard />} />

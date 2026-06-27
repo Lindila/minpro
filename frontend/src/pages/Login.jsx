@@ -173,6 +173,12 @@ export default function Login() {
             </div>
           )}
 
+          <div style={{ textAlign: 'right', marginTop: -6, marginBottom: 4 }}>
+            <Link to="/forgot-password" style={{ fontSize: 12, color: '#1B4D3E', fontWeight: 600, textDecoration: 'none' }}>
+              {lang === 'fr' ? 'Mot de passe oublié ?' : 'Forgot password?'}
+            </Link>
+          </div>
+
           <button type="submit" className="auth-submit" disabled={loading || !email || !password}>
             {loading
               ? <><i className="ti ti-loader spin" />{lang === 'fr' ? 'Connexion...' : 'Signing in...'}</>

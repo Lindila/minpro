@@ -41,12 +41,12 @@ async function seed() {
 
   // ── Utilisateurs ─────────────────────────────────────────────
   const users = await User.create([
-    { prenom: 'Marie-Claire', nom: 'NGUYEN',  email: 'admin@minresi.cm',      password: 'admin123', role: 'admin', institute: null       },
-    { prenom: 'Paul',         nom: 'MBARGA',  email: 'chef@minresi.cm',       password: 'chef123',  role: 'chef',  institute: I.IRAD     },
-    { prenom: 'Cécile',       nom: 'ATEBA',   email: 'dir@minresi.cm',        password: 'dir123',   role: 'dir',   institute: I.IMPM     },
-    { prenom: 'Jean-Baptiste',nom: 'TANDA',   email: 'chercheur@minresi.cm',  password: 'ch123',    role: 'ch',    institute: I.IRAD     },
-    { prenom: 'Brigitte',     nom: 'ESSONO',  email: 'essono@minresi.cm',     password: 'ess123',   role: 'chef',  institute: I.CNE      },
-    { prenom: 'Samuel',       nom: 'FOUDA',   email: 'fouda@minresi.cm',      password: 'foud123',  role: 'ch',    institute: I.ANRP     },
+    { prenom: 'Marie-Claire', nom: 'NGUYEN',  email: 'admin@minresi.cm',      password: 'admin123', role: 'admin', institute: null,    isVerified: true },
+    { prenom: 'Paul',         nom: 'MBARGA',  email: 'chef@minresi.cm',       password: 'chef123',  role: 'chef',  institute: I.IRAD,    isVerified: true },
+    { prenom: 'Cécile',       nom: 'ATEBA',   email: 'dir@minresi.cm',        password: 'dir123',   role: 'dir',   institute: I.IMPM,    isVerified: true },
+    { prenom: 'Jean-Baptiste',nom: 'TANDA',   email: 'chercheur@minresi.cm',  password: 'ch123',    role: 'ch',    institute: I.IRAD,    isVerified: true },
+    { prenom: 'Brigitte',     nom: 'ESSONO',  email: 'essono@minresi.cm',     password: 'ess123',   role: 'chef',  institute: I.CNE,     isVerified: true },
+    { prenom: 'Samuel',       nom: 'FOUDA',   email: 'fouda@minresi.cm',      password: 'foud123',  role: 'ch',    institute: I.ANRP,    isVerified: true },
   ]);
   const U = Object.fromEntries(users.map(u => [u.email, u._id]));
   console.log(`👤 ${users.length} utilisateurs créés`);
