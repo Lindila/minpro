@@ -19,9 +19,7 @@ export function AuthProvider({ children }) {
 
   const register = useCallback(async (data) => {
     const res = await registerApi(data)
-    localStorage.setItem('sigpro_token', res.data.token)
-    setUser(res.data.user)
-    return res.data.user
+    return res.data
   }, [])
 
   const login = useCallback(async (email, password) => {
@@ -37,14 +35,17 @@ export function AuthProvider({ children }) {
   }, [])
 
   // Permissions raccourcis
-  const isAdmin    = user?.role === 'admin'
+  const isDev      = user?.role === 'dev'
+  const isAdmin    = isDev || user?.role === 'admin'
   const isChef     = user?.role === 'chef'
   const isDir      = user?.role === 'dir'
+  const isComptable= user?.role === 'comptable'
   const canCreate  = isAdmin || isChef
   const canValidate= isAdmin || isChef || isDir
+  const canBudget  = isAdmin || isChef || isComptable
 
   return (
-    <AuthContext.Provider value={{ user, loading, register, login, logout, isAdmin, isChef, isDir, canCreate, canValidate }}>
+    <AuthContext.Provider value={{ user, loading, register, login, logout, isDev, isAdmin, isChef, isDir, isComptable, canCreate, canValidate, canBudget }}>
       {children}
     </AuthContext.Provider>
   )

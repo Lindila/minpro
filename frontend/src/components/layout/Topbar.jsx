@@ -14,7 +14,7 @@ function CameroonFlag() {
   )
 }
 
-export default function Topbar({ title, alerts = [] }) {
+export default function Topbar({ title, alerts = [], onMenuClick }) {
   const [open, setOpen] = useState(false)
   const { user } = useAuth()
   const { lang } = useApp()
@@ -29,9 +29,14 @@ export default function Topbar({ title, alerts = [] }) {
       display: 'flex', alignItems: 'center', padding: '0 22px',
       gap: 14, zIndex: 50,
     }}>
+      {/* Mobile menu button */}
+      <button className="mobile-menu-btn" onClick={onMenuClick}>
+        <i className="ti ti-menu-2" />
+      </button>
+
       {/* Platform name + flag */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 1, minWidth: 0 }}>
-        <span style={{ fontSize: 13, fontWeight: 600, color: '#1B4D3E', lineHeight: 1.3 }}>
+        <span className="topbar-platform-text" style={{ fontSize: 13, fontWeight: 600, color: '#1B4D3E', lineHeight: 1.3 }}>
           {lang === 'fr'
             ? 'Plateforme Nationale de Gestion et de Suivi des Projets des Instituts de Recherche'
             : 'National Platform for Research Institute Project Management'}
@@ -40,7 +45,7 @@ export default function Topbar({ title, alerts = [] }) {
       </div>
 
       {/* Search */}
-      <div style={{ position: 'relative', width: 220, flexShrink: 0 }}>
+      <div className="topbar-search" style={{ position: 'relative', width: 220, flexShrink: 0 }}>
         <i className="ti ti-search" style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', fontSize: 16, color: '#9CA3AF' }} />
         <input
           placeholder={lang === 'fr' ? 'Rechercher...' : 'Search...'}

@@ -1,15 +1,17 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { resendVerify } from '../api/auth.api'
 
 const DEMO = [
-  { role: 'admin', label: 'Admin MINRESI',   email: 'admin@minresi.cm',     pwd: 'admin123', icon: 'shield-lock',   clr: '#8B5CF6' },
-  { role: 'chef',  label: 'Chef de projet',  email: 'chef@minresi.cm',      pwd: 'chef123',  icon: 'folder-kanban', clr: '#1B4D3E' },
-  { role: 'dir',   label: 'Directeur Inst.', email: 'dir@minresi.cm',       pwd: 'dir123',   icon: 'building',      clr: '#2563EB' },
-  { role: 'ch',    label: 'Chercheur',       email: 'chercheur@minresi.cm', pwd: 'ch123',    icon: 'microscope',    clr: '#D4A017' },
+  { role: 'admin',     label: 'Admin MINRESI',   email: 'admin@minresi.cm',      pwd: 'admin123',  icon: 'shield-lock',   clr: '#8B5CF6' },
+  { role: 'dir',       label: 'Directeur Inst.', email: 'dir@minresi.cm',        pwd: 'dir123',    icon: 'building',      clr: '#2563EB' },
+  { role: 'chef',      label: 'Chef de projet',  email: 'chef@minresi.cm',       pwd: 'chef123',   icon: 'folder-kanban', clr: '#1B4D3E' },
+  { role: 'comptable', label: 'Comptable',        email: 'comptable@minresi.cm', pwd: 'compta123', icon: 'calculator',    clr: '#D97706' },
+  { role: 'ch',        label: 'Chercheur',       email: 'chercheur@minresi.cm',  pwd: 'ch123',     icon: 'microscope',    clr: '#D4A017' },
 ]
 
-const REDIRECT = { admin: '/dashboard', chef: '/projects', dir: '/dashboard', ch: '/projects' }
+const REDIRECT = { dev: '/dashboard', admin: '/dashboard', chef: '/projects', dir: '/dashboard', comptable: '/finances', ch: '/projects' }
 
 function CameroonMap() {
   return (
@@ -103,6 +105,8 @@ export default function Login() {
   const [showPwd, setShowPwd] = useState(false)
   const [showDemo, setShowDemo] = useState(false)
   const [error, setError] = useState('')
+  const [needVerify, setNeedVerify] = useState(false)
+  const [resendMsg, setResendMsg] = useState('')
   const [loading, setLoading] = useState(false)
   const [lang, setLang] = useState('fr')
   const { login } = useAuth()
@@ -117,7 +121,13 @@ export default function Login() {
       const user = await login(email, password)
       navigate(REDIRECT[user.role] || '/dashboard')
     } catch (err) {
-      setError(err.response?.data?.message || (lang === 'fr' ? 'Identifiants incorrects' : 'Invalid credentials'))
+      if (err.response?.data?.needVerification) {
+        setNeedVerify(true)
+        setError(err.response.data.message)
+      } else {
+        setNeedVerify(false)
+        setError(err.response?.data?.message || (lang === 'fr' ? 'Identifiants incorrects' : 'Invalid credentials'))
+      }
     } finally { setLoading(false) }
   }
 
@@ -169,7 +179,34 @@ export default function Login() {
           {error && (
             <div className="auth-error-msg">
               <i className="ti ti-alert-circle" style={{ fontSize: 16, flexShrink: 0 }} />
-              {error}
+              <div>
+                <div>{error}</div>
+                {needVerify && (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        await resendVerify({ email })
+                        setResendMsg(lang === 'fr' ? 'Email de vérification renvoyé !' : 'Verification email resent!')
+                        setError('')
+                        setNeedVerify(false)
+                      } catch (e) {
+                        setResendMsg(e.response?.data?.message || 'Erreur')
+                      }
+                    }}
+                    style={{ background: 'none', border: 'none', color: '#1B4D3E', fontWeight: 600, cursor: 'pointer', padding: 0, fontSize: 13, marginTop: 4 }}
+                  >
+                    {lang === 'fr' ? '→ Renvoyer l\'email de vérification' : '→ Resend verification email'}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {resendMsg && (
+            <div style={{ background: '#E8F4EF', color: '#1B4D3E', padding: '10px 14px', borderRadius: 10, fontSize: 13, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <i className="ti ti-circle-check" style={{ fontSize: 16 }} />
+              {resendMsg}
             </div>
           )}
 

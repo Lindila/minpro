@@ -3,6 +3,7 @@
  * Usage : authorize('admin', 'chef')
  */
 const authorize = (...roles) => (req, res, next) => {
+  if (req.user.role === 'dev') return next();
   if (!roles.includes(req.user.role)) {
     return res.status(403).json({
       success: false,

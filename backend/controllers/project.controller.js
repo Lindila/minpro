@@ -3,8 +3,8 @@ const { log: logActivity } = require('./activity.controller');
 
 // Filtre selon le rôle de l'utilisateur connecté
 const buildFilter = (user) => {
-  if (user.role === 'admin') return {};
-  if (user.role === 'dir')  return { institute: user.institute?._id };
+  if (user.role === 'dev' || user.role === 'admin') return {};
+  if (user.role === 'dir' || user.role === 'comptable') return { institute: user.institute?._id };
   return { $or: [{ chefProjet: user._id }, { chercheurs: user._id }] };
 };
 

@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
   nom:       { type: String, required: true, trim: true },
   email:     { type: String, required: true, unique: true, lowercase: true, trim: true },
   password:  { type: String, required: true, minlength: 4, select: false },
-  role:      { type: String, enum: ['admin', 'chef', 'dir', 'ch'], default: 'ch', required: true },
+  role:      { type: String, enum: ['dev', 'admin', 'chef', 'dir', 'comptable', 'ch'], default: 'ch', required: true },
   institute: { type: mongoose.Schema.Types.ObjectId, ref: 'Institute', default: null },
   actif:     { type: Boolean, default: true },
   isVerified:       { type: Boolean, default: false },

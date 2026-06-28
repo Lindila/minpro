@@ -3,19 +3,19 @@ import { useAuth } from '../../context/AuthContext'
 import { useApp }  from '../../context/AppContext'
 
 const NAV = [
-  { key: 'dashboard',    path: '/dashboard',    icon: 'home',           roles: ['admin','chef','dir','ch'] },
-  { key: 'projects',     path: '/projects',     icon: 'folder-kanban',  roles: ['admin','chef','dir','ch'] },
-  { key: 'institutes',   path: '/projects',     icon: 'building',       roles: ['admin','dir'] },
-  { key: 'researchers',  path: '/researchers',  icon: 'users',          roles: ['admin','chef','dir'] },
-  { key: 'reports',      path: '/projects',     icon: 'file-text',      roles: ['admin','chef','dir'] },
-  { key: 'finances',     path: '/projects',     icon: 'coins',          roles: ['admin','chef'] },
-  { key: 'partnerships', path: '/projects',     icon: 'handshake',      roles: ['admin'] },
-  { key: 'calendar',     path: '/projects',     icon: 'calendar',       roles: ['admin','chef','dir','ch'] },
-  { key: 'documents',    path: '/projects',     icon: 'file-analytics', roles: ['admin','chef','dir','ch'] },
-  { key: 'settings',     path: '/users',        icon: 'settings',       roles: ['admin'] },
+  { key: 'dashboard',    path: '/dashboard',     icon: 'home',           roles: ['dev','admin','chef','dir','comptable','ch'] },
+  { key: 'projects',     path: '/projects',      icon: 'folder-kanban',  roles: ['dev','admin','chef','dir','comptable','ch'] },
+  { key: 'institutes',   path: '/institutes',    icon: 'building',       roles: ['dev','admin','dir'] },
+  { key: 'researchers',  path: '/researchers',   icon: 'users',          roles: ['dev','admin','chef','dir'] },
+  { key: 'reports',      path: '/reports',       icon: 'file-text',      roles: ['dev','admin','chef','dir'] },
+  { key: 'finances',     path: '/finances',      icon: 'coins',          roles: ['dev','admin','chef','comptable'] },
+  { key: 'partnerships', path: '/partnerships',  icon: 'handshake',      roles: ['dev','admin'] },
+  { key: 'calendar',     path: '/calendar',      icon: 'calendar',       roles: ['dev','admin','chef','dir','comptable','ch'] },
+  { key: 'documents',    path: '/documents',     icon: 'file-analytics', roles: ['dev','admin','chef','dir','ch'] },
+  { key: 'settings',     path: '/users',         icon: 'settings',       roles: ['dev','admin'] },
 ]
 
-export default function Sidebar({ alertCount = 0 }) {
+export default function Sidebar({ alertCount = 0, open, onClose }) {
   const navigate  = useNavigate()
   const location  = useLocation()
   const { user, logout } = useAuth()
@@ -25,18 +25,18 @@ export default function Sidebar({ alertCount = 0 }) {
   const initials = user ? `${user.prenom[0]}${user.nom[0]}` : '?'
 
   const isActive = (item) => {
-    if (item.key === 'dashboard') return location.pathname === '/dashboard'
-    if (item.key === 'projects')  return location.pathname.startsWith('/projects')
-    return false
+    if (item.key === 'projects') return location.pathname.startsWith('/projects')
+    if (item.key === 'settings') return location.pathname === '/users'
+    return location.pathname === item.path
   }
 
   return (
-    <aside style={{
+    <aside className={`layout-sidebar${open ? ' open' : ''}`} style={{
       position: 'fixed', left: 0, top: 0, bottom: 0, width: 236,
       background: '#0D2B1D', display: 'flex', flexDirection: 'column', zIndex: 100,
     }}>
       {/* Logo */}
-      <div style={{ padding: '18px 16px 14px', borderBottom: '1px solid rgba(255,255,255,.1)' }}>
+      <div style={{ padding: '18px 16px 14px', borderBottom: '1px solid rgba(255,255,255,.1)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 36, height: 36, background: '#D4A017', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <i className="ti ti-layers-intersect" style={{ fontSize: 20, color: 'white' }} />
@@ -46,6 +46,14 @@ export default function Sidebar({ alertCount = 0 }) {
             <div style={{ color: 'rgba(255,255,255,.4)', fontSize: 9 }}>République du Cameroun</div>
           </div>
         </div>
+        {onClose && (
+          <button onClick={onClose} className="sidebar-close-btn" style={{
+            display: 'none', background: 'none', border: 'none', color: 'rgba(255,255,255,.5)',
+            fontSize: 20, cursor: 'pointer', padding: 4,
+          }}>
+            <i className="ti ti-x" />
+          </button>
+        )}
       </div>
 
       {/* Navigation */}

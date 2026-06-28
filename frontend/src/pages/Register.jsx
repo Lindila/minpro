@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { register as registerApi } from '../api/auth.api'
+import { useNavigate, Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 import { getInstitutes } from '../api/institute.api'
 
 const ROLES = [
-  { value: 'ch',   label: { fr: 'Chercheur',          en: 'Researcher' } },
-  { value: 'chef', label: { fr: 'Chef de projet',     en: 'Project Manager' } },
-  { value: 'dir',  label: { fr: 'Directeur Institut', en: 'Institute Director' } },
-  { value: 'admin',label: { fr: 'Administrateur',     en: 'Administrator' } },
+  { value: 'ch',        label: { fr: 'Chercheur',             en: 'Researcher' } },
+  { value: 'chef',      label: { fr: 'Chef de projet',        en: 'Project Manager' } },
+  { value: 'dir',       label: { fr: 'Directeur Institut',    en: 'Institute Director' } },
+  { value: 'comptable', label: { fr: 'Comptable / Gestionnaire', en: 'Accountant' } },
+  { value: 'admin',     label: { fr: 'Administrateur',        en: 'Administrator' } },
 ]
-
-const REDIRECT = { admin: '/dashboard', chef: '/projects', dir: '/dashboard', ch: '/projects' }
 
 function CameroonMap() {
   return (
@@ -106,9 +105,11 @@ export default function Register() {
   const [showPwd, setShowPwd] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
-  const [emailSent, setEmailSent] = useState(false)
   const [lang, setLang] = useState('fr')
+  const { register } = useAuth()
+  const navigate = useNavigate()
 
   useEffect(() => {
     getInstitutes().then(r => setInstitutes(r.data.data)).catch(() => {})
@@ -135,12 +136,14 @@ export default function Register() {
 
     setLoading(true)
     try {
-      await registerApi({
+      await register({
         prenom: form.prenom, nom: form.nom, email: form.email,
         password: form.password, role: form.role,
         institute: form.institute || undefined,
       })
-      setEmailSent(true)
+      setSuccess(lang === 'fr'
+        ? 'Un email de vérification a été envoyé à votre adresse. Veuillez cliquer sur le lien dans l\'email pour activer votre compte.'
+        : 'A verification email has been sent. Please click the link in the email to activate your account.')
     } catch (err) {
       setError(err.response?.data?.message || (lang === 'fr' ? "Erreur lors de l'inscription" : 'Registration failed'))
     } finally { setLoading(false) }
@@ -152,27 +155,6 @@ export default function Register() {
     <div className="auth-page">
       {/* ── Left Panel : Form ── */}
       <div className="auth-form-panel">
-        {emailSent ? (
-          <div style={{ textAlign: 'center', padding: '20px 0' }}>
-            <div style={{ width: 64, height: 64, borderRadius: 16, background: '#DCFCE7', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
-              <i className="ti ti-mail-check" style={{ fontSize: 32, color: '#16A34A' }} />
-            </div>
-            <h2 style={{ fontSize: 20, fontWeight: 700, color: '#111827', margin: '0 0 10px' }}>
-              {lang === 'fr' ? 'Vérifiez votre email !' : 'Check your email!'}
-            </h2>
-            <p style={{ color: '#6B7280', fontSize: 14, lineHeight: 1.6, marginBottom: 6 }}>
-              {lang === 'fr'
-                ? <>Un lien de vérification a été envoyé à <strong>{form.email}</strong>. Cliquez dessus pour activer votre compte.</>
-                : <>A verification link has been sent to <strong>{form.email}</strong>. Click it to activate your account.</>}
-            </p>
-            <p style={{ color: '#9CA3AF', fontSize: 12, marginBottom: 24 }}>
-              {lang === 'fr' ? "Pensez à vérifier vos spams." : 'Check your spam folder too.'}
-            </p>
-            <Link to="/login" style={{ display: 'inline-block', background: '#1B4D3E', color: 'white', padding: '12px 28px', borderRadius: 12, fontWeight: 600, fontSize: 14, textDecoration: 'none' }}>
-              {lang === 'fr' ? 'Aller à la connexion' : 'Go to login'}
-            </Link>
-          </div>
-        ) : (<>
         <div className="auth-brand">
           <div className="auth-brand-icon">
             <i className="ti ti-layers-intersect" style={{ fontSize: 24, color: '#1B4D3E' }} />
@@ -246,7 +228,19 @@ export default function Register() {
             </div>
           )}
 
-          <button type="submit" className="auth-submit" disabled={loading}>
+          {success && (
+            <div className="auth-success-msg" style={{ background: '#E8F4EF', color: '#1B4D3E', padding: '12px 16px', borderRadius: 10, fontSize: 14, display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 8 }}>
+              <i className="ti ti-circle-check" style={{ fontSize: 18, flexShrink: 0, marginTop: 1 }} />
+              <div>
+                <div>{success}</div>
+                <Link to="/login" style={{ color: '#1B4D3E', fontWeight: 600, marginTop: 6, display: 'inline-block' }}>
+                  {lang === 'fr' ? '→ Aller à la page de connexion' : '→ Go to login page'}
+                </Link>
+              </div>
+            </div>
+          )}
+
+          <button type="submit" className="auth-submit" disabled={loading || success}>
             {loading
               ? <><i className="ti ti-loader spin" />{lang === 'fr' ? 'Inscription...' : 'Creating...'}</>
               : <><i className="ti ti-user-plus" />{lang === 'fr' ? "S'inscrire" : 'Sign Up'}</>}
@@ -257,7 +251,7 @@ export default function Register() {
           {lang === 'fr' ? 'Vous avez déjà un compte ? ' : 'Already have an account? '}
           <Link to="/login"><strong>{lang === 'fr' ? 'Se connecter' : 'Sign in'}</strong></Link>
         </div>
-        </>)}
+       
       </div>
 
       {/* ── Right Panel : Branding ── */}

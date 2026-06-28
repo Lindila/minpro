@@ -38,8 +38,8 @@ export default function Users() {
     </div>
   )
 
-  const ROLE_V = { admin: 'purple', chef: 'green', dir: 'blue', ch: 'gray' }
-  const ROLE_L = { admin: 'Admin MINRESI', chef: 'Chef de projet', dir: 'Directeur Inst.', ch: 'Chercheur' }
+  const ROLE_V = { dev: 'red', admin: 'purple', chef: 'green', dir: 'blue', comptable: 'yellow', ch: 'gray' }
+  const ROLE_L = { dev: 'Développeur', admin: 'Admin MINRESI', chef: 'Chef de projet', dir: 'Directeur Inst.', comptable: 'Comptable', ch: 'Chercheur' }
 
   const TH = { fontSize: 11, fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: '.5px', padding: '10px 16px', textAlign: 'left', borderBottom: '1px solid #E5E7EB', background: '#F9FAFB' }
 

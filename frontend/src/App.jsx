@@ -13,6 +13,12 @@ import Projects         from './pages/Projects.jsx'
 import ProjectDetail    from './pages/ProjectDetail.jsx'
 import Researchers      from './pages/Researchers.jsx'
 import Users            from './pages/Users.jsx'
+import Calendar         from './pages/Calendar.jsx'
+import Reports          from './pages/Reports.jsx'
+import Institutes       from './pages/Institutes.jsx'
+import Finances         from './pages/Finances.jsx'
+import Documents        from './pages/Documents.jsx'
+import Partnerships     from './pages/Partnerships.jsx'
 
 export default function App() {
   return (
@@ -30,6 +36,12 @@ export default function App() {
             <Route path="projects"        element={<Projects />} />
             <Route path="projects/:id"    element={<ProjectDetail />} />
             <Route path="researchers"     element={<Researchers />} />
+            <Route path="calendar"        element={<Calendar />} />
+            <Route path="reports"         element={<Reports />} />
+            <Route path="institutes"      element={<Institutes />} />
+            <Route path="finances"        element={<Finances />} />
+            <Route path="documents"       element={<Documents />} />
+            <Route path="partnerships"    element={<Partnerships />} />
             <Route path="users"           element={<Users />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />

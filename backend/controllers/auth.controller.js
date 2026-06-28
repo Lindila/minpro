@@ -7,7 +7,9 @@ const { sendEmail, verifyEmailTemplate, resetPasswordTemplate } = require('../ut
 const generateToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE || '7d' });
 
-const appUrl = () => process.env.APP_URL || process.env.FRONTEND_URL || 'http://localhost:5173';
+const appUrl = () => process.env.NODE_ENV === 'production'
+  ? (process.env.APP_URL || process.env.FRONTEND_URL || 'http://localhost:5173')
+  : (process.env.FRONTEND_URL || 'http://localhost:5173');
 
 // POST /api/auth/register
 const register = async (req, res) => {
@@ -21,8 +23,13 @@ const register = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Le mot de passe doit contenir au moins 4 caractères' });
 
     const exists = await User.findOne({ email: email.toLowerCase() });
-    if (exists)
-      return res.status(400).json({ success: false, message: 'Cet email est déjà utilisé' });
+    if (exists) {
+      if (!exists.isVerified) {
+        await User.deleteOne({ _id: exists._id });
+      } else {
+        return res.status(400).json({ success: false, message: 'Cet email est déjà utilisé' });
+      }
+    }
 
     const user = await User.create({
       prenom: prenom.trim(),
@@ -44,17 +51,13 @@ const register = async (req, res) => {
       html: verifyEmailTemplate(`${user.prenom} ${user.nom}`, link),
     });
 
-    logActivity('user_registered', user._id, null, `${user.prenom} ${user.nom} s'est inscrit`);
-    res.status(201).json({
-      success: true,
-      needsVerification: true,
-      message: 'Compte créé ! Vérifiez votre email pour activer votre compte.',
-    });
+    logActivity('user_registered', user._id, null, `${user.prenom} ${user.nom} s'est inscrit (en attente de vérification)`);
+    res.status(201).json({ success: true, needVerification: true, message: 'Un email de vérification a été envoyé. Veuillez vérifier votre boîte de réception.' });
   } catch (err) {
     console.error(err);
     if (err.code === 11000)
       return res.status(400).json({ success: false, message: 'Cet email est déjà utilisé' });
-    res.status(500).json({ success: false, message: 'Erreur serveur' });
+    res.status(500).json({ success: false, message: err.message || 'Erreur serveur' });
   }
 };
 
@@ -128,6 +131,9 @@ const login = async (req, res) => {
     const match = await user.comparePassword(password);
     if (!match)
       return res.status(401).json({ success: false, message: 'Identifiants incorrects' });
+
+    if (!user.isVerified)
+      return res.status(403).json({ success: false, needVerification: true, message: 'Veuillez vérifier votre adresse email avant de vous connecter.' });
 
     user.lastLogin = new Date();
     await user.save({ validateBeforeSave: false });

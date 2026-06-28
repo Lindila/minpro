@@ -18,10 +18,12 @@ const TRANSLATIONS = {
       users:        'Utilisateurs',
     },
     roles: {
-      admin: 'Admin MINRESI',
-      chef:  'Chef de projet',
-      dir:   'Directeur Institut',
-      ch:    'Chercheur',
+      dev:       'Développeur',
+      admin:     'Admin MINRESI',
+      chef:      'Chef de projet',
+      dir:       'Directeur Institut',
+      comptable: 'Comptable',
+      ch:        'Chercheur',
     },
     statuses: {
       'En préparation': 'En préparation',
@@ -63,10 +65,12 @@ const TRANSLATIONS = {
       users:        'Users',
     },
     roles: {
-      admin: 'MINRESI Admin',
-      chef:  'Project Manager',
-      dir:   'Institute Director',
-      ch:    'Researcher',
+      dev:       'Developer',
+      admin:     'MINRESI Admin',
+      chef:      'Project Manager',
+      dir:       'Institute Director',
+      comptable: 'Accountant',
+      ch:        'Researcher',
     },
     statuses: {
       'En préparation': 'In Preparation',
