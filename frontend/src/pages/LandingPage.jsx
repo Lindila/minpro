@@ -29,7 +29,6 @@ const STATS = [
 ]
 
 const HERO_SLIDES = [
-  { img: '/Batiment.png', alt: 'Bâtiment MINRESI — Yaoundé' },
   { img: '/innovation-1.png', alt: 'Innovation agricole — Agri\'Smart' },
   { img: '/innovation-2.png', alt: 'Innovation médicale — MedSahara' },
   { img: '/innovation-3.png', alt: 'Innovation matériaux — EcoBrique' },
@@ -148,8 +147,11 @@ export default function LandingPage() {
       </nav>
 
       {/* ═══ HERO ═══ */}
-      <section className="landing-hero" id="hero">
-        <div className="landing-hero-inner">
+      <section className="landing-hero" id="hero" style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* Bâtiment MINRESI en fond */}
+        <img src="/Batiment.png" alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0 }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(255,255,255,.92) 0%, rgba(255,255,255,.75) 50%, rgba(255,255,255,.3) 100%)', zIndex: 1 }} />
+        <div className="landing-hero-inner" style={{ position: 'relative', zIndex: 2 }}>
           <div className="landing-hero-left">
             <h1 style={{ fontSize: 42, fontWeight: 800, lineHeight: 1.2, color: C.text, marginBottom: 20, letterSpacing: -0.5 }}>
               Ensemble, innovons aujourd'hui pour un{' '}
@@ -181,7 +183,6 @@ export default function LandingPage() {
                   }}
                 />
               ))}
-              {/* Léger overlay sombre pour lisibilité */}
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,.35) 0%, transparent 50%)', zIndex: 2, pointerEvents: 'none' }} />
               {/* Dots */}
               <div style={{ position: 'absolute', bottom: 14, left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: 8, zIndex: 5 }}>
