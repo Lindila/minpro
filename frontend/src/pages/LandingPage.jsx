@@ -83,6 +83,62 @@ function imgFallback(e) {
   e.target.style.display = 'none'
 }
 
+/* ── Animated Counter ── */
+function AnimatedCounter({ target, suffix = '' }) {
+  const [count, setCount] = useState(0)
+  const ref = useRef(null)
+  const num = parseInt(target.replace(/\D/g, ''), 10)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        let start = 0
+        const duration = 1800
+        const step = (ts) => {
+          if (!start) start = ts
+          const progress = Math.min((ts - start) / duration, 1)
+          const eased = 1 - Math.pow(1 - progress, 3)
+          setCount(Math.floor(eased * num))
+          if (progress < 1) requestAnimationFrame(step)
+        }
+        requestAnimationFrame(step)
+        observer.disconnect()
+      }
+    }, { threshold: 0.3 })
+    if (ref.current) observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [num])
+
+  return <span ref={ref}>{count}{suffix}</span>
+}
+
+/* ── Scroll reveal hook ── */
+function useReveal() {
+  const ref = useRef(null)
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setVisible(true); observer.disconnect() }
+    }, { threshold: 0.1 })
+    if (ref.current) observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [])
+  return [ref, visible]
+}
+
+function Reveal({ children, delay = 0 }) {
+  const [ref, visible] = useReveal()
+  return (
+    <div ref={ref} style={{
+      opacity: visible ? 1 : 0,
+      transform: visible ? 'translateY(0)' : 'translateY(30px)',
+      transition: `opacity .7s ease ${delay}s, transform .7s ease ${delay}s`,
+    }}>
+      {children}
+    </div>
+  )
+}
+
 /* ══════════════════════════════════════════════════════════
    Landing Page Component
    ══════════════════════════════════════════════════════════ */
@@ -159,7 +215,7 @@ export default function LandingPage() {
               meilleur demain.
             </h1>
             <p style={{ fontSize: 16, color: C.muted, lineHeight: 1.7, marginBottom: 32, maxWidth: 520 }}>
-              Découvrez les projets de recherche, les innovations et les instituts qui construisent l'avenir du Cameroun.
+              Découvrez les projets de recherche, les innovations et les instituts qui construisent l'avenir du Cameroun.Le centre de pilotage des projets scientifiques.
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
               <a href="#projets" onClick={e => scrollTo(e, '#projets')} className="landing-btn-green" style={{ padding: '12px 28px', fontSize: 15 }}>
@@ -197,7 +253,7 @@ export default function LandingPage() {
               {/* Quote card */}
               <div className="landing-hero-quote">
                 <p style={{ fontSize: 13, fontStyle: 'italic', color: C.text, lineHeight: 1.5, marginBottom: 8 }}>
-                  "La recherche d'aujourd'hui est le développement de demain."
+                  "L'innovation au service du Cameroun."
                 </p>
                 <div style={{ display: 'flex', gap: 12, fontSize: 11, color: C.muted, fontWeight: 600 }}>
                   <span style={{ color: C.green }}>Innovation</span>
@@ -216,18 +272,22 @@ export default function LandingPage() {
       <section className="landing-stats">
         <div className="landing-stats-inner">
           {STATS.map((s, i) => (
-            <div key={i} className="landing-stat-card">
-              <div style={{
-                width: 48, height: 48, borderRadius: 12,
-                background: C.lightGreen, display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <i className={`ti ${s.icon}`} style={{ fontSize: 22, color: C.green }} />
+            <Reveal key={i} delay={i * 0.1}>
+              <div className="landing-stat-card">
+                <div style={{
+                  width: 48, height: 48, borderRadius: 12,
+                  background: C.lightGreen, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  <i className={`ti ${s.icon}`} style={{ fontSize: 22, color: C.green }} />
+                </div>
+                <div>
+                  <div style={{ fontSize: 28, fontWeight: 800, color: C.green }}>
+                    <AnimatedCounter target={s.value} suffix={s.value.includes('+') ? '+' : ''} />
+                  </div>
+                  <div style={{ fontSize: 13, color: C.muted, marginTop: 2 }}>{s.label}</div>
+                </div>
               </div>
-              <div>
-                <div style={{ fontSize: 28, fontWeight: 800, color: C.green }}>{s.value}</div>
-                <div style={{ fontSize: 13, color: C.muted, marginTop: 2 }}>{s.label}</div>
-              </div>
-            </div>
+            </Reveal>
           ))}
         </div>
       </section>
@@ -253,128 +313,136 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ═══ THREE COLUMNS: PROJETS / INSTITUTS / INNOVATIONS ═══ */}
-      <section className="landing-three-col" id="projets">
+      {/* ═══ INNOVATIONS ═══ */}
+      <section style={{ padding: '60px 0', background: C.white }} id="innovations">
+        <Reveal>
         <div className="landing-container">
-          <div className="landing-three-grid">
-
-            {/* ── Projets ── */}
-            <div className="landing-col-card" id="projets-list">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: C.text }}>
-                  <i className="ti ti-folder" style={{ color: C.green, marginRight: 8 }} />
-                  Projets de recherche récents
-                </h2>
-              </div>
-              {PROJECTS.map((p, i) => (
-                <div key={i} className="landing-project-item">
-                  <div style={{
-                    width: 56, height: 56, borderRadius: 12,
-                    background: `linear-gradient(135deg, ${C.lightGreen}, ${C.green}22)`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                  }}>
-                    <i className="ti ti-file-text" style={{ fontSize: 22, color: C.green }} />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: C.text, marginBottom: 6 }}>{p.title}</div>
-                    <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-                      <span style={{
-                        fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 20,
-                        background: (DOMAIN_COLORS[p.domain] || DOMAIN_COLORS.Agriculture).bg,
-                        color: (DOMAIN_COLORS[p.domain] || DOMAIN_COLORS.Agriculture).text,
-                      }}>
-                        {p.domain}
-                      </span>
-                      <span style={{ fontSize: 11, color: C.muted }}>{p.year}</span>
-                      <span style={{ fontSize: 11, color: C.muted }}>&bull; {p.institute}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              <a href="#projets" onClick={e => scrollTo(e, '#projets')}
-                 style={{ display: 'block', marginTop: 16, fontSize: 13, fontWeight: 600, color: C.green }}>
-                Voir tous les projets &rarr;
-              </a>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32 }}>
+            <div>
+              <h2 style={{ fontSize: 28, fontWeight: 800, color: C.text, marginBottom: 6 }}>
+                <i className="ti ti-bulb" style={{ color: C.gold, marginRight: 10 }} />
+                Innovations du Cameroun
+              </h2>
+              <p style={{ fontSize: 14, color: C.muted }}>Les technologies qui transforment notre société</p>
             </div>
-
-            {/* ── Instituts ── */}
-            <div className="landing-col-card" id="instituts">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: C.text }}>
-                  <i className="ti ti-building" style={{ color: C.green, marginRight: 8 }} />
-                  Nos instituts
-                </h2>
-              </div>
-              {INSTITUTES.map((inst, i) => (
-                <div key={i} className="landing-institute-item">
-                  <div style={{
-                    width: 44, height: 44, borderRadius: 10,
-                    background: C.lightGreen, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-                  }}>
-                    <span style={{ fontSize: 14, fontWeight: 800, color: C.green }}>{inst.sigle.charAt(0)}</span>
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: C.green }}>{inst.sigle}</div>
-                    <div style={{ fontSize: 12, color: C.text, marginBottom: 3, lineHeight: 1.3 }}>{inst.nom}</div>
-                    <div style={{ fontSize: 11, color: C.muted }}>{inst.domaines}</div>
-                  </div>
-                </div>
-              ))}
-              <a href="#instituts" onClick={e => scrollTo(e, '#instituts')}
-                 style={{ display: 'block', marginTop: 16, fontSize: 13, fontWeight: 600, color: C.green }}>
-                Voir tous les instituts &rarr;
-              </a>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button onClick={() => scrollInnovations(-1)} style={{ width: 40, height: 40, borderRadius: 10, border: `1px solid ${C.border}`, background: C.white, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <i className="ti ti-arrow-left" style={{ fontSize: 18, color: C.muted }} />
+              </button>
+              <button onClick={() => scrollInnovations(1)} style={{ width: 40, height: 40, borderRadius: 10, border: `1px solid ${C.border}`, background: C.white, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <i className="ti ti-arrow-right" style={{ fontSize: 18, color: C.muted }} />
+              </button>
             </div>
-
-            {/* ── Innovations ── */}
-            <div className="landing-col-card" id="innovations">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-                <h2 style={{ fontSize: 18, fontWeight: 700, color: C.text }}>
-                  <i className="ti ti-bulb" style={{ color: C.gold, marginRight: 8 }} />
-                  Innovations du Cameroun
-                </h2>
-                <button onClick={() => scrollInnovations(1)}
-                  style={{
-                    width: 32, height: 32, borderRadius: 8, border: `1px solid ${C.border}`,
-                    background: C.white, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}>
-                  <i className="ti ti-arrow-right" style={{ fontSize: 16, color: C.muted }} />
-                </button>
-              </div>
-              <div ref={innovRef} className="landing-innov-scroll">
-                {INNOVATIONS.map((inn, i) => (
-                  <div key={i} className="landing-innov-card">
-                    <div style={{
-                      width: '100%', height: 120, borderRadius: 12,
-                      background: `linear-gradient(135deg, ${C.lightGreen}, ${C.green}15)`,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12,
-                      position: 'relative', overflow: 'hidden',
-                    }}>
-                      <img src={`/innovation-${i + 1}.png`} alt={inn.name} onError={imgFallback}
-                           style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 12, position: 'relative', zIndex: 1 }} />
-                      <i className="ti ti-bulb" style={{ position: 'absolute', fontSize: 40, color: `${C.green}33` }} />
-                    </div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: C.text, marginBottom: 4 }}>{inn.name}</div>
-                    <div style={{ fontSize: 12, color: C.muted, marginBottom: 8, lineHeight: 1.4 }}>{inn.desc}</div>
-                    <span style={{
-                      fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 20,
-                      background: (DOMAIN_COLORS[inn.domain] || DOMAIN_COLORS.Agriculture).bg,
-                      color: (DOMAIN_COLORS[inn.domain] || DOMAIN_COLORS.Agriculture).text,
-                      display: 'inline-block',
-                    }}>
+          </div>
+          <div ref={innovRef} className="landing-innov-scroll" style={{ gap: 20, paddingBottom: 12 }}>
+            {INNOVATIONS.map((inn, i) => (
+              <div key={i} className="landing-innov-card" style={{ minWidth: 280, maxWidth: 320, padding: 0, overflow: 'hidden' }}>
+                <div style={{ width: '100%', height: 180, position: 'relative', overflow: 'hidden' }}>
+                  <img src={`/innovation-${i + 1}.png`} alt={inn.name} onError={imgFallback}
+                       style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <div style={{ position: 'absolute', bottom: 10, left: 10 }}>
+                    <span style={{ fontSize: 11, fontWeight: 600, padding: '4px 12px', borderRadius: 20, background: 'rgba(255,255,255,.9)', color: (DOMAIN_COLORS[inn.domain] || DOMAIN_COLORS.Agriculture).text }}>
                       {inn.domain}
                     </span>
                   </div>
-                ))}
+                </div>
+                <div style={{ padding: '16px 18px' }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 6 }}>{inn.name}</div>
+                  <div style={{ fontSize: 13, color: C.muted, lineHeight: 1.5 }}>{inn.desc}</div>
+                </div>
               </div>
-            </div>
-
+            ))}
           </div>
         </div>
+        </Reveal>
+      </section>
+
+      {/* ═══ PROJETS ═══ */}
+      <section style={{ padding: '60px 0', background: '#F5F7F5' }} id="projets">
+        <Reveal>
+        <div className="landing-container">
+          <div style={{ marginBottom: 32 }}>
+            <h2 style={{ fontSize: 28, fontWeight: 800, color: C.text, marginBottom: 6 }}>
+              <i className="ti ti-folder" style={{ color: C.green, marginRight: 10 }} />
+              Projets de recherche récents
+            </h2>
+            <p style={{ fontSize: 14, color: C.muted }}>Découvrez les derniers projets des instituts camerounais</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 20 }}>
+            {PROJECTS.map((p, i) => (
+              <Reveal key={i} delay={i * 0.1}>
+              <div style={{ background: C.white, borderRadius: 16, padding: 24, border: `1px solid ${C.border}`, transition: 'transform .2s, box-shadow .2s', cursor: 'pointer' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(27,77,62,.1)' }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
+              >
+                <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
+                  <div style={{ width: 52, height: 52, borderRadius: 14, background: `linear-gradient(135deg, ${C.lightGreen}, ${C.green}22)`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <i className="ti ti-flask" style={{ fontSize: 24, color: C.green }} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 8, lineHeight: 1.4 }}>{p.title}</div>
+                    <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+                      <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 12px', borderRadius: 20, background: (DOMAIN_COLORS[p.domain] || DOMAIN_COLORS.Agriculture).bg, color: (DOMAIN_COLORS[p.domain] || DOMAIN_COLORS.Agriculture).text }}>{p.domain}</span>
+                      <span style={{ fontSize: 12, color: C.muted }}><i className="ti ti-calendar" style={{ fontSize: 13, marginRight: 4 }} />{p.year}</span>
+                      <span style={{ fontSize: 12, color: C.green, fontWeight: 600 }}>{p.institute}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </Reveal>
+            ))}
+          </div>
+          <div style={{ textAlign: 'center', marginTop: 28 }}>
+            <Link to="/visitor/login" className="landing-btn-outline" style={{ padding: '12px 32px' }}>
+              Voir tous les projets <i className="ti ti-arrow-right" style={{ fontSize: 16 }} />
+            </Link>
+          </div>
+        </div>
+        </Reveal>
+      </section>
+
+      {/* ═══ INSTITUTS ═══ */}
+      <section style={{ padding: '60px 0', background: C.white }} id="instituts">
+        <Reveal>
+        <div className="landing-container">
+          <div style={{ marginBottom: 32 }}>
+            <h2 style={{ fontSize: 28, fontWeight: 800, color: C.text, marginBottom: 6 }}>
+              <i className="ti ti-building" style={{ color: C.green, marginRight: 10 }} />
+              Les 8 Instituts de Recherche du Cameroun
+            </h2>
+            <p style={{ fontSize: 14, color: C.muted }}>Sous la tutelle du MINRESI — Ministère de la Recherche Scientifique et de l'Innovation</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
+            {[...INSTITUTES,
+              { sigle: 'MIPROMALO', nom: 'Mission de Promotion des Matériaux Locaux', domaines: 'Matériaux, Construction, Innovation' },
+              { sigle: 'ANRP', nom: 'Agence Nationale de Radioprotection', domaines: 'Radioprotection, Sûreté nucléaire' },
+              { sigle: 'CNE', nom: "Centre National d'Éducation", domaines: 'Sciences de l\'éducation, Pédagogie' },
+              { sigle: 'CNDT', nom: 'Comité National de Développement des Technologies', domaines: 'Transfert technologique, Innovation' },
+            ].map((inst, i) => (
+              <Reveal key={i} delay={i * 0.05}>
+              <div style={{ background: '#F9FAFB', borderRadius: 14, padding: '20px 22px', border: `1px solid ${C.border}`, display: 'flex', gap: 14, alignItems: 'center', transition: 'transform .2s, box-shadow .2s' }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(27,77,62,.08)' }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
+              >
+                <div style={{ width: 48, height: 48, borderRadius: 12, background: C.lightGreen, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <span style={{ fontSize: 16, fontWeight: 800, color: C.green }}>{inst.sigle.substring(0, 2)}</span>
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: C.green }}>{inst.sigle}</div>
+                  <div style={{ fontSize: 12, color: C.text, lineHeight: 1.3, marginBottom: 3 }}>{inst.nom}</div>
+                  <div style={{ fontSize: 11, color: C.muted }}>{inst.domaines}</div>
+                </div>
+              </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+        </Reveal>
       </section>
 
       {/* ═══ FEATURE CARDS ═══ */}
       <section className="landing-features" id="apropos">
+        <Reveal>
         <div className="landing-container">
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
             <h2 style={{ fontSize: 28, fontWeight: 800, color: C.text, marginBottom: 10 }}>
@@ -400,9 +468,11 @@ export default function LandingPage() {
             ))}
           </div>
         </div>
+        </Reveal>
       </section>
 
       {/* ═══ CTA BANNER ═══ */}
+      <Reveal>
       <section className="landing-cta" id="actualites">
         <div className="landing-cta-inner">
           <h2 style={{ fontSize: 28, fontWeight: 800, color: C.white, marginBottom: 12 }}>
@@ -429,8 +499,10 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+      </Reveal>
 
       {/* ═══ COLLABORATION BANNER ═══ */}
+      <Reveal>
       <section className="landing-collab">
         <div className="landing-collab-inner">
           <div style={{
@@ -451,6 +523,7 @@ export default function LandingPage() {
           </button>
         </div>
       </section>
+      </Reveal>
 
       {/* ═══ FOOTER ═══ */}
       <footer className="landing-footer">

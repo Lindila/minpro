@@ -27,7 +27,7 @@ export default function VisitorInnovations() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!loading && (!user || user.role !== 'visitor')) {
+    if (!loading && !user) {
       navigate('/visitor/login')
     }
   }, [user, loading, navigate])

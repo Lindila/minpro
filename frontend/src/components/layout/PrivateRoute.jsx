@@ -13,5 +13,6 @@ export default function PrivateRoute({ children }) {
   }
   if (!user) return <Navigate to="/login" replace />
   if (user.role === 'visitor') return <Navigate to="/visitor/innovations" replace />
-  return children
+  if (['dev','admin','chef','dir','comptable','ch'].includes(user.role)) return children
+  return <Navigate to="/" replace />
 }
