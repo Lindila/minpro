@@ -31,7 +31,7 @@ export default function ProjectDetail() {
     setLoading(true)
     getProject(id)
       .then(r => setProject(r.data.data))
-      .catch(() => navigate('/projects'))
+      .catch(() => navigate('/app/projects'))
       .finally(() => setLoading(false))
   }, [id, navigate])
 
@@ -258,7 +258,7 @@ export default function ProjectDetail() {
     <div>
       {/* Header */}
       <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', marginBottom: 18 }}>
-        <Button variant="ghost" size="sm" icon="arrow-left" onClick={() => navigate('/projects')}>
+        <Button variant="ghost" size="sm" icon="arrow-left" onClick={() => navigate('/app/projects')}>
           {lang === 'fr' ? 'Retour' : 'Back'}
         </Button>
         <div style={{ flex: 1, minWidth: 0 }}>

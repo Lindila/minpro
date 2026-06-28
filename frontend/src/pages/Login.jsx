@@ -11,7 +11,7 @@ const DEMO = [
   { role: 'ch',        label: 'Chercheur',       email: 'chercheur@minresi.cm',  pwd: 'ch123',     icon: 'microscope',    clr: '#D4A017' },
 ]
 
-const REDIRECT = { dev: '/dashboard', admin: '/dashboard', chef: '/projects', dir: '/dashboard', comptable: '/finances', ch: '/projects' }
+const REDIRECT = { dev: '/app/dashboard', admin: '/app/dashboard', chef: '/app/projects', dir: '/app/dashboard', comptable: '/app/finances', ch: '/app/projects' }
 
 function CameroonMap() {
   return (

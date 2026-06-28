@@ -24,6 +24,7 @@ const TRANSLATIONS = {
       dir:       'Directeur Institut',
       comptable: 'Comptable',
       ch:        'Chercheur',
+      visitor:   'Visiteur',
     },
     statuses: {
       'En préparation': 'En préparation',
@@ -71,6 +72,7 @@ const TRANSLATIONS = {
       dir:       'Institute Director',
       comptable: 'Accountant',
       ch:        'Researcher',
+      visitor:   'Visitor',
     },
     statuses: {
       'En préparation': 'In Preparation',

@@ -250,7 +250,7 @@ export default function Dashboard() {
         <div className="dash-card">
           <div className="dash-card-header">
             <span className="dash-card-title">{lang === 'fr' ? "Projets proches de l'échéance" : 'Upcoming Deadlines'}</span>
-            <span className="dash-card-link" onClick={() => navigate('/projects')}>
+            <span className="dash-card-link" onClick={() => navigate('/app/projects')}>
               {lang === 'fr' ? 'Voir tout' : 'See all'}
             </span>
           </div>
@@ -269,7 +269,7 @@ export default function Dashboard() {
               ) : deadlineProjects.map(p => {
                 const ds = getDeadlineStatus(p.dateFin)
                 return (
-                  <tr key={p._id} onClick={() => navigate(`/projects/${p._id}`)}>
+                  <tr key={p._id} onClick={() => navigate(`/app/projects/${p._id}`)}>
                     <td className="td-title">{p.intitule}</td>
                     <td className="td-muted">{p.institute?.sigle || '—'}</td>
                     <td className="td-muted">{formatDate(p.dateFin)}</td>
@@ -312,7 +312,7 @@ export default function Dashboard() {
         <div className="dash-card">
           <div className="dash-card-header">
             <span className="dash-card-title">{lang === 'fr' ? 'Exécution budgétaire' : 'Budget Execution'}</span>
-            <span className="dash-card-link" onClick={() => navigate('/projects')}>
+            <span className="dash-card-link" onClick={() => navigate('/app/projects')}>
               {lang === 'fr' ? 'Voir détails' : 'Details'}
             </span>
           </div>

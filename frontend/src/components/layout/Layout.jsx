@@ -6,16 +6,16 @@ import { getAlerts } from '../../api/project.api'
 import { useApp } from '../../context/AppContext'
 
 const TITLES = {
-  '/dashboard':    { fr: 'Tableau de bord',          en: 'Dashboard'           },
-  '/projects':     { fr: 'Projets de recherche',      en: 'Research Projects'   },
-  '/researchers':  { fr: 'Annuaire des chercheurs',   en: 'Researchers'         },
-  '/users':        { fr: 'Gestion des utilisateurs',  en: 'User Management'     },
-  '/institutes':   { fr: 'Instituts de recherche',    en: 'Research Institutes'  },
-  '/reports':      { fr: 'Rapports et analyses',      en: 'Reports & Analytics' },
-  '/finances':     { fr: 'Finances et budgets',       en: 'Finances & Budgets'  },
-  '/partnerships': { fr: 'Partenariats',              en: 'Partnerships'        },
-  '/calendar':     { fr: 'Calendrier',                en: 'Calendar'            },
-  '/documents':    { fr: 'Documents',                 en: 'Documents'           },
+  '/app/dashboard':    { fr: 'Tableau de bord',          en: 'Dashboard'           },
+  '/app/projects':     { fr: 'Projets de recherche',      en: 'Research Projects'   },
+  '/app/researchers':  { fr: 'Annuaire des chercheurs',   en: 'Researchers'         },
+  '/app/users':        { fr: 'Gestion des utilisateurs',  en: 'User Management'     },
+  '/app/institutes':   { fr: 'Instituts de recherche',    en: 'Research Institutes'  },
+  '/app/reports':      { fr: 'Rapports et analyses',      en: 'Reports & Analytics' },
+  '/app/finances':     { fr: 'Finances et budgets',       en: 'Finances & Budgets'  },
+  '/app/partnerships': { fr: 'Partenariats',              en: 'Partnerships'        },
+  '/app/calendar':     { fr: 'Calendrier',                en: 'Calendar'            },
+  '/app/documents':    { fr: 'Documents',                 en: 'Documents'           },
 }
 
 export default function Layout() {
@@ -37,7 +37,7 @@ export default function Layout() {
   }, [location.pathname])
 
   const getTitle = () => {
-    if (location.pathname.startsWith('/projects/')) return lang === 'fr' ? 'Détail du projet' : 'Project Detail'
+    if (location.pathname.startsWith('/app/projects/')) return lang === 'fr' ? 'Détail du projet' : 'Project Detail'
     return TITLES[location.pathname]?.[lang] ?? 'SIGPRO-MINRESI'
   }
 

@@ -116,7 +116,7 @@ export default function Projects() {
                 return (
                   <tr
                     key={p._id}
-                    onClick={() => navigate(`/projects/${p._id}`)}
+                    onClick={() => navigate(`/app/projects/${p._id}`)}
                     style={{ borderTop: '1px solid #E5E7EB', cursor: 'pointer', transition: 'background .1s' }}
                     onMouseOver={e => e.currentTarget.style.background = '#F9FAFB'}
                     onMouseOut={e  => e.currentTarget.style.background = 'transparent'}

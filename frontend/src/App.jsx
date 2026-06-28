@@ -19,19 +19,28 @@ import Institutes       from './pages/Institutes.jsx'
 import Finances         from './pages/Finances.jsx'
 import Documents        from './pages/Documents.jsx'
 import Partnerships     from './pages/Partnerships.jsx'
+import VisitorLogin     from './pages/VisitorLogin.jsx'
+import VisitorRegister  from './pages/VisitorRegister.jsx'
+import VisitorInnovations from './pages/VisitorInnovations.jsx'
+import LandingPage      from './pages/LandingPage.jsx'
 
 export default function App() {
   return (
     <AuthProvider>
       <AppProvider>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          {/* Public */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/visitor/login" element={<VisitorLogin />} />
+          <Route path="/visitor/register" element={<VisitorRegister />} />
+          <Route path="/visitor/innovations" element={<VisitorInnovations />} />
           <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
-          <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
-            <Route index element={<Navigate to="/dashboard" replace />} />
+          {/* MINRESI interne */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route element={<PrivateRoute><Layout /></PrivateRoute>}>
             <Route path="dashboard"       element={<Dashboard />} />
             <Route path="projects"        element={<Projects />} />
             <Route path="projects/:id"    element={<ProjectDetail />} />

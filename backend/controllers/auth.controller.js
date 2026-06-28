@@ -14,7 +14,7 @@ const appUrl = () => process.env.NODE_ENV === 'production'
 // POST /api/auth/register
 const register = async (req, res) => {
   try {
-    const { prenom, nom, email, password, role, institute } = req.body;
+    const { prenom, nom, email, password, role, institute, telephone } = req.body;
 
     if (!prenom || !nom || !email || !password)
       return res.status(400).json({ success: false, message: 'Tous les champs obligatoires sont requis' });
@@ -37,6 +37,7 @@ const register = async (req, res) => {
       email: email.toLowerCase().trim(),
       password,
       role: role || 'ch',
+      telephone: telephone || undefined,
       institute: institute || null,
       isVerified: false,
     });

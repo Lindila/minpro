@@ -3,16 +3,16 @@ import { useAuth } from '../../context/AuthContext'
 import { useApp }  from '../../context/AppContext'
 
 const NAV = [
-  { key: 'dashboard',    path: '/dashboard',     icon: 'home',           roles: ['dev','admin','chef','dir','comptable','ch'] },
-  { key: 'projects',     path: '/projects',      icon: 'folder-kanban',  roles: ['dev','admin','chef','dir','comptable','ch'] },
-  { key: 'institutes',   path: '/institutes',    icon: 'building',       roles: ['dev','admin','dir'] },
-  { key: 'researchers',  path: '/researchers',   icon: 'users',          roles: ['dev','admin','chef','dir'] },
-  { key: 'reports',      path: '/reports',       icon: 'file-text',      roles: ['dev','admin','chef','dir'] },
-  { key: 'finances',     path: '/finances',      icon: 'coins',          roles: ['dev','admin','chef','comptable'] },
-  { key: 'partnerships', path: '/partnerships',  icon: 'handshake',      roles: ['dev','admin'] },
-  { key: 'calendar',     path: '/calendar',      icon: 'calendar',       roles: ['dev','admin','chef','dir','comptable','ch'] },
-  { key: 'documents',    path: '/documents',     icon: 'file-analytics', roles: ['dev','admin','chef','dir','ch'] },
-  { key: 'settings',     path: '/users',         icon: 'settings',       roles: ['dev','admin'] },
+  { key: 'dashboard',    path: '/app/dashboard',     icon: 'home',           roles: ['dev','admin','chef','dir','comptable','ch'] },
+  { key: 'projects',     path: '/app/projects',      icon: 'folder-kanban',  roles: ['dev','admin','chef','dir','comptable','ch'] },
+  { key: 'institutes',   path: '/app/institutes',    icon: 'building',       roles: ['dev','admin','dir'] },
+  { key: 'researchers',  path: '/app/researchers',   icon: 'users',          roles: ['dev','admin','chef','dir'] },
+  { key: 'reports',      path: '/app/reports',       icon: 'file-text',      roles: ['dev','admin','chef','dir'] },
+  { key: 'finances',     path: '/app/finances',      icon: 'coins',          roles: ['dev','admin','chef','comptable'] },
+  { key: 'partnerships', path: '/app/partnerships',  icon: 'handshake',      roles: ['dev','admin'] },
+  { key: 'calendar',     path: '/app/calendar',      icon: 'calendar',       roles: ['dev','admin','chef','dir','comptable','ch'] },
+  { key: 'documents',    path: '/app/documents',     icon: 'file-analytics', roles: ['dev','admin','chef','dir','ch'] },
+  { key: 'settings',     path: '/app/users',         icon: 'settings',       roles: ['dev','admin'] },
 ]
 
 export default function Sidebar({ alertCount = 0, open, onClose }) {
@@ -25,8 +25,8 @@ export default function Sidebar({ alertCount = 0, open, onClose }) {
   const initials = user ? `${user.prenom[0]}${user.nom[0]}` : '?'
 
   const isActive = (item) => {
-    if (item.key === 'projects') return location.pathname.startsWith('/projects')
-    if (item.key === 'settings') return location.pathname === '/users'
+    if (item.key === 'projects') return location.pathname.startsWith('/app/projects')
+    if (item.key === 'settings') return location.pathname === '/app/users'
     return location.pathname === item.path
   }
 

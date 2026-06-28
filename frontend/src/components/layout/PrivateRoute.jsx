@@ -11,5 +11,7 @@ export default function PrivateRoute({ children }) {
       </div>
     )
   }
-  return user ? children : <Navigate to="/login" replace />
+  if (!user) return <Navigate to="/login" replace />
+  if (user.role === 'visitor') return <Navigate to="/visitor/innovations" replace />
+  return children
 }
