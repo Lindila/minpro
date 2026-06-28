@@ -57,6 +57,67 @@ const FEATURES = [
   { icon: 'ti-mail',     title: 'Contactez-nous', desc: 'Un projet, une idée ou un partenariat ? Échangeons ensemble.' },
 ]
 
+const T = {
+  fr: {
+    brand: 'Gestion des Projets de Recherche', brandSub: 'Instituts de Recherche – CMR',
+    nav: ['Accueil','Innovations','Projets','Instituts','À propos','Contact'],
+    login: 'Se connecter', hero1: "Ensemble, innovons aujourd'hui pour un", hero2: 'Cameroun', hero3: 'meilleur demain.',
+    heroSub: "Découvrez les projets de recherche, les innovations et les instituts qui construisent l'avenir du Cameroun.",
+    btnProjects: 'Découvrir les projets', btnMore: 'En savoir plus',
+    quote: "La recherche d'aujourd'hui est le développement de demain.",
+    searchPh: 'Rechercher un projet, un institut, une innovation...', searchBtn: 'Rechercher',
+    innovTitle: 'Innovations du Cameroun', innovSub: 'Les technologies qui transforment notre société',
+    projTitle: 'Projets de recherche récents', projSub: 'Découvrez les derniers projets des instituts camerounais',
+    projAll: 'Voir tous les projets', instTitle: 'Les 8 Instituts de Recherche du Cameroun',
+    instSub: 'Sous la tutelle du MINRESI — Ministère de la Recherche Scientifique et de l\'Innovation',
+    featTitle: 'Que pouvez-vous faire ?', featSub: 'SIGPRO-MINRESI vous offre un accès unique à l\'écosystème de recherche camerounais.',
+    feat: ['Explorez','Innovez','Collaborez','Contactez-nous'],
+    featDesc: ['Recherchez et découvrez des projets de recherche et leurs résultats.','Découvrez les innovations qui transforment notre société et notre économie.','Trouvez les bons partenaires et construisez ensemble l\'avenir.','Un projet, une idée ou un partenariat ? Échangeons ensemble.'],
+    ctaTitle: "Rejoignez l'écosystème de recherche du Cameroun",
+    ctaSub: 'Accédez à des opportunités, partagez vos connaissances et contribuez à un avenir durable et innovant.',
+    ctaCreate: 'Créer un compte',
+    donTitle: 'Soutenez la recherche camerounaise', donSub: 'Votre contribution finance directement les chercheurs et leurs projets innovants.',
+    donBtn: 'Faire un don', donNote: 'Paiement sécurisé via Mobile Money',
+    donOm: 'Orange Money', donMomo: 'MTN MoMo',
+    collabTitle: "Collaborons pour l'avenir",
+    collabSub: 'Vous êtes une entreprise, un chercheur ou une institution internationale ? Rejoignez-nous pour développer des solutions innovantes et durables.',
+    collabBtn: 'Nous contacter', contactWa: 'Discutons sur WhatsApp',
+    copy: '© 2025 Gestion des Projets de Recherche - Instituts de Recherche du Cameroun. Tous droits réservés.',
+    espaceMinresi: 'Espace MINRESI',
+    stats: ['Projets de recherche','Instituts de recherche','Innovations','Chercheurs impliqués'],
+  },
+  en: {
+    brand: 'Research Project Management', brandSub: 'Research Institutes – CMR',
+    nav: ['Home','Innovations','Projects','Institutes','About','Contact'],
+    login: 'Sign in', hero1: "Together, let's innovate today for a better", hero2: 'Cameroon', hero3: 'tomorrow.',
+    heroSub: 'Discover the research projects, innovations and institutes building the future of Cameroon.',
+    btnProjects: 'Discover projects', btnMore: 'Learn more',
+    quote: "Today's research is tomorrow's development.",
+    searchPh: 'Search a project, institute, innovation...', searchBtn: 'Search',
+    innovTitle: 'Innovations from Cameroon', innovSub: 'Technologies transforming our society',
+    projTitle: 'Recent research projects', projSub: 'Discover the latest projects from Cameroonian institutes',
+    projAll: 'View all projects', instTitle: "Cameroon's 8 Research Institutes",
+    instSub: 'Under the supervision of MINRESI — Ministry of Scientific Research and Innovation',
+    featTitle: 'What can you do?', featSub: 'SIGPRO-MINRESI gives you unique access to the Cameroonian research ecosystem.',
+    feat: ['Explore','Innovate','Collaborate','Contact us'],
+    featDesc: ['Search and discover research projects and their results.','Discover innovations transforming our society and economy.','Find the right partners and build the future together.','A project, idea or partnership? Let\'s talk.'],
+    ctaTitle: "Join Cameroon's research ecosystem",
+    ctaSub: 'Access opportunities, share your knowledge and contribute to a sustainable and innovative future.',
+    ctaCreate: 'Create an account',
+    donTitle: 'Support Cameroonian research', donSub: 'Your contribution directly funds researchers and their innovative projects.',
+    donBtn: 'Make a donation', donNote: 'Secure payment via Mobile Money',
+    donOm: 'Orange Money', donMomo: 'MTN MoMo',
+    collabTitle: 'Collaborate for the future',
+    collabSub: 'Are you a company, researcher or international institution? Join us to develop innovative and sustainable solutions.',
+    collabBtn: 'Contact us', contactWa: 'Chat on WhatsApp',
+    copy: '© 2025 Research Project Management - Research Institutes of Cameroon. All rights reserved.',
+    espaceMinresi: 'MINRESI Staff',
+    stats: ['Research projects','Research institutes','Innovations','Researchers involved'],
+  },
+}
+
+const WHATSAPP_NUMBER = '237677576783'
+
 /* ── Color constants ── */
 const C = {
   green:     '#1B4D3E',
@@ -145,7 +206,9 @@ function Reveal({ children, delay = 0 }) {
 export default function LandingPage() {
   const [search, setSearch] = useState('')
   const [heroSlide, setHeroSlide] = useState(0)
+  const [lang, setLang] = useState('fr')
   const innovRef = useRef(null)
+  const t = T[lang]
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -177,26 +240,28 @@ export default function LandingPage() {
               <i className="ti ti-layers-intersect" style={{ color: C.white, fontSize: 20 }} />
             </div>
             <div style={{ lineHeight: 1.25 }}>
-              <div style={{ fontWeight: 700, fontSize: 14, color: C.text }}>Gestion des Projets de Recherche</div>
-              <div style={{ fontSize: 11, color: C.muted }}>Instituts de Recherche &ndash; CMR</div>
+              <div style={{ fontWeight: 700, fontSize: 14, color: C.text }}>{t.brand}</div>
+              <div style={{ fontSize: 11, color: C.muted }}>{t.brandSub}</div>
             </div>
           </div>
 
           {/* Center links */}
           <div className="landing-nav-links">
-            {NAV_LINKS.map(l => (
-              <a key={l.href} href={l.href} onClick={e => scrollTo(e, l.href)}
-                 className="landing-nav-link">
-                {l.label}
+            {['#accueil','#innovations','#projets','#instituts','#apropos','#contact'].map((href, i) => (
+              <a key={href} href={href} onClick={e => scrollTo(e, href)} className="landing-nav-link">
+                {t.nav[i]}
               </a>
             ))}
           </div>
 
           {/* Right */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-            <span style={{ fontSize: 18 }} role="img" aria-label="Cameroun">{'\u{1F1E8}\u{1F1F2}'}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <button onClick={() => setLang(l => l === 'fr' ? 'en' : 'fr')}
+              style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', borderRadius: 8, border: `1px solid ${C.border}`, background: C.white, cursor: 'pointer', fontSize: 12, fontWeight: 600, color: C.text, fontFamily: 'inherit' }}>
+              {'\u{1F1E8}\u{1F1F2}'} {lang === 'fr' ? 'EN' : 'FR'}
+            </button>
             <Link to="/visitor/login" className="landing-btn-green" style={{ fontSize: 13, padding: '8px 20px' }}>
-              Se connecter
+              <i className="ti ti-user" style={{ fontSize: 15 }} /> {t.login}
             </Link>
           </div>
         </div>
@@ -210,19 +275,19 @@ export default function LandingPage() {
         <div className="landing-hero-inner" style={{ position: 'relative', zIndex: 2 }}>
           <div className="landing-hero-left">
             <h1 style={{ fontSize: 42, fontWeight: 800, lineHeight: 1.2, color: C.text, marginBottom: 20, letterSpacing: -0.5 }}>
-              Ensemble, innovons aujourd'hui pour un{' '}
-              <span style={{ color: C.green }}>Cameroun</span>{' '}
-              meilleur demain.
+              {t.hero1}{' '}
+              <span style={{ color: C.green }}>{t.hero2}</span>{' '}
+              {t.hero3}
             </h1>
             <p style={{ fontSize: 16, color: C.muted, lineHeight: 1.7, marginBottom: 32, maxWidth: 520 }}>
-              Découvrez les projets de recherche, les innovations et les instituts qui construisent l'avenir du Cameroun.Le centre de pilotage des projets scientifiques.
+              {t.heroSub}
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
               <a href="#projets" onClick={e => scrollTo(e, '#projets')} className="landing-btn-green" style={{ padding: '12px 28px', fontSize: 15 }}>
-                <i className="ti ti-arrow-right" style={{ fontSize: 18 }} /> Découvrir les projets
+                <i className="ti ti-arrow-right" style={{ fontSize: 18 }} /> {t.btnProjects}
               </a>
               <a href="#apropos" onClick={e => scrollTo(e, '#apropos')} className="landing-btn-outline" style={{ padding: '12px 28px', fontSize: 15 }}>
-                En savoir plus
+                {t.btnMore}
               </a>
             </div>
           </div>
@@ -253,7 +318,7 @@ export default function LandingPage() {
               {/* Quote card */}
               <div className="landing-hero-quote">
                 <p style={{ fontSize: 13, fontStyle: 'italic', color: C.text, lineHeight: 1.5, marginBottom: 8 }}>
-                  "L'innovation au service du Cameroun."
+                  "{t.quote}"
                 </p>
                 <div style={{ display: 'flex', gap: 12, fontSize: 11, color: C.muted, fontWeight: 600 }}>
                   <span style={{ color: C.green }}>Innovation</span>
@@ -284,7 +349,7 @@ export default function LandingPage() {
                   <div style={{ fontSize: 28, fontWeight: 800, color: C.green }}>
                     <AnimatedCounter target={s.value} suffix={s.value.includes('+') ? '+' : ''} />
                   </div>
-                  <div style={{ fontSize: 13, color: C.muted, marginTop: 2 }}>{s.label}</div>
+                  <div style={{ fontSize: 13, color: C.muted, marginTop: 2 }}>{t.stats[i]}</div>
                 </div>
               </div>
             </Reveal>
@@ -300,7 +365,7 @@ export default function LandingPage() {
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
-            placeholder="Rechercher un projet, un institut, une innovation..."
+            placeholder={t.searchPh}
             style={{
               flex: 1, border: 'none', outline: 'none', fontSize: 15,
               padding: '14px 16px', background: 'transparent', color: C.text,
@@ -308,7 +373,7 @@ export default function LandingPage() {
             }}
           />
           <button className="landing-btn-green" style={{ margin: 4, padding: '10px 24px', fontSize: 14, borderRadius: 10 }}>
-            Rechercher
+            {t.searchBtn}
           </button>
         </div>
       </section>
@@ -321,9 +386,9 @@ export default function LandingPage() {
             <div>
               <h2 style={{ fontSize: 28, fontWeight: 800, color: C.text, marginBottom: 6 }}>
                 <i className="ti ti-bulb" style={{ color: C.gold, marginRight: 10 }} />
-                Innovations du Cameroun
+                {t.innovTitle}
               </h2>
-              <p style={{ fontSize: 14, color: C.muted }}>Les technologies qui transforment notre société</p>
+              <p style={{ fontSize: 14, color: C.muted }}>{t.innovSub}</p>
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
               <button onClick={() => scrollInnovations(-1)} style={{ width: 40, height: 40, borderRadius: 10, border: `1px solid ${C.border}`, background: C.white, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -364,9 +429,9 @@ export default function LandingPage() {
           <div style={{ marginBottom: 32 }}>
             <h2 style={{ fontSize: 28, fontWeight: 800, color: C.text, marginBottom: 6 }}>
               <i className="ti ti-folder" style={{ color: C.green, marginRight: 10 }} />
-              Projets de recherche récents
+              {t.projTitle}
             </h2>
-            <p style={{ fontSize: 14, color: C.muted }}>Découvrez les derniers projets des instituts camerounais</p>
+            <p style={{ fontSize: 14, color: C.muted }}>{t.projSub}</p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 20 }}>
             {PROJECTS.map((p, i) => (
@@ -394,7 +459,7 @@ export default function LandingPage() {
           </div>
           <div style={{ textAlign: 'center', marginTop: 28 }}>
             <Link to="/visitor/login" className="landing-btn-outline" style={{ padding: '12px 32px' }}>
-              Voir tous les projets <i className="ti ti-arrow-right" style={{ fontSize: 16 }} />
+              {t.projAll} <i className="ti ti-arrow-right" style={{ fontSize: 16 }} />
             </Link>
           </div>
         </div>
@@ -408,9 +473,9 @@ export default function LandingPage() {
           <div style={{ marginBottom: 32 }}>
             <h2 style={{ fontSize: 28, fontWeight: 800, color: C.text, marginBottom: 6 }}>
               <i className="ti ti-building" style={{ color: C.green, marginRight: 10 }} />
-              Les 8 Instituts de Recherche du Cameroun
+              {t.instTitle}
             </h2>
-            <p style={{ fontSize: 14, color: C.muted }}>Sous la tutelle du MINRESI — Ministère de la Recherche Scientifique et de l'Innovation</p>
+            <p style={{ fontSize: 14, color: C.muted }}>{t.instSub}</p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
             {[...INSTITUTES,
@@ -446,10 +511,10 @@ export default function LandingPage() {
         <div className="landing-container">
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
             <h2 style={{ fontSize: 28, fontWeight: 800, color: C.text, marginBottom: 10 }}>
-              Que pouvez-vous faire ?
+              {t.featTitle}
             </h2>
             <p style={{ fontSize: 15, color: C.muted, maxWidth: 520, margin: '0 auto' }}>
-              SIGPRO-MINRESI vous offre un accès unique à l'écosystème de recherche camerounais.
+              {t.featSub}
             </p>
           </div>
           <div className="landing-features-grid">
@@ -462,8 +527,8 @@ export default function LandingPage() {
                 }}>
                   <i className={`ti ${f.icon}`} style={{ fontSize: 24, color: C.green }} />
                 </div>
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 8 }}>{f.title}</h3>
-                <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.6 }}>{f.desc}</p>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 8 }}>{t.feat[i]}</h3>
+                <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.6 }}>{t.featDesc[i]}</p>
               </div>
             ))}
           </div>
@@ -476,10 +541,10 @@ export default function LandingPage() {
       <section className="landing-cta" id="actualites">
         <div className="landing-cta-inner">
           <h2 style={{ fontSize: 28, fontWeight: 800, color: C.white, marginBottom: 12 }}>
-            Rejoignez l'écosystème de recherche du Cameroun
+            {t.ctaTitle}
           </h2>
           <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.85)', maxWidth: 600, margin: '0 auto 28px', lineHeight: 1.7 }}>
-            Accédez à des opportunités, partagez vos connaissances et contribuez à un avenir durable et innovant.
+            {t.ctaSub}
           </p>
           <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap', alignItems: 'center' }}>
             <Link to="/visitor/login" style={{
@@ -488,13 +553,13 @@ export default function LandingPage() {
               background: C.white, color: C.green, border: 'none', cursor: 'pointer',
               textDecoration: 'none', transition: 'transform .2s',
             }}>
-              Se connecter <i className="ti ti-arrow-right" style={{ fontSize: 18 }} />
+              {t.login} <i className="ti ti-arrow-right" style={{ fontSize: 18 }} />
             </Link>
             <Link to="/visitor/register" style={{
               fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.9)',
               textDecoration: 'underline', textUnderlineOffset: 3,
             }}>
-              Créer un compte
+              {t.ctaCreate}
             </Link>
           </div>
         </div>
@@ -513,23 +578,76 @@ export default function LandingPage() {
             <i className="ti ti-handshake" style={{ fontSize: 28, color: C.green }} />
           </div>
           <h2 style={{ fontSize: 24, fontWeight: 800, color: C.text, marginBottom: 10 }}>
-            Collaborons pour l'avenir
+            {t.collabTitle}
           </h2>
           <p style={{ fontSize: 14, color: C.muted, maxWidth: 580, margin: '0 auto 24px', lineHeight: 1.7 }}>
-            Vous êtes une entreprise, un chercheur ou une institution internationale ? Rejoignez-nous pour développer des solutions innovantes et durables.
+            {t.collabSub}
           </p>
-          <button className="landing-btn-green" style={{ padding: '12px 28px', fontSize: 15 }}>
-            <i className="ti ti-arrow-right" style={{ fontSize: 18 }} /> Nous contacter
-          </button>
+          <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer" className="landing-btn-green" style={{ padding: '12px 28px', fontSize: 15, textDecoration: 'none' }}>
+            <i className="ti ti-brand-whatsapp" style={{ fontSize: 18 }} /> {t.collabBtn}
+          </a>
         </div>
       </section>
       </Reveal>
+
+      {/* ═══ DONATION ═══ */}
+      <Reveal>
+      <section style={{ padding: '60px 0', background: C.white }} id="contact">
+        <div className="landing-container">
+          <div style={{ textAlign: 'center', marginBottom: 36 }}>
+            <div style={{ width: 64, height: 64, borderRadius: 16, background: '#FEF3C7', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+              <i className="ti ti-heart-handshake" style={{ fontSize: 32, color: '#D97706' }} />
+            </div>
+            <h2 style={{ fontSize: 28, fontWeight: 800, color: C.text, marginBottom: 8 }}>{t.donTitle}</h2>
+            <p style={{ fontSize: 15, color: C.muted, maxWidth: 520, margin: '0 auto', lineHeight: 1.6 }}>{t.donSub}</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20, maxWidth: 600, margin: '0 auto' }}>
+            <div style={{ background: '#FFF7ED', borderRadius: 16, padding: '28px 24px', border: '1px solid #FDBA74', textAlign: 'center', transition: 'transform .2s' }}
+              onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-4px)'}
+              onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+            >
+              <div style={{ width: 48, height: 48, borderRadius: 12, background: '#FF6600', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
+                <i className="ti ti-device-mobile" style={{ fontSize: 24, color: C.white }} />
+              </div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: '#EA580C', marginBottom: 4 }}>{t.donOm}</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: C.text, marginBottom: 4 }}>#150*1*1#</div>
+              <div style={{ fontSize: 12, color: C.muted }}>N° : 688 01 51 88</div>
+            </div>
+            <div style={{ background: '#FEFCE8', borderRadius: 16, padding: '28px 24px', border: '1px solid #FDE047', textAlign: 'center', transition: 'transform .2s' }}
+              onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-4px)'}
+              onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+            >
+              <div style={{ width: 48, height: 48, borderRadius: 12, background: '#FBBF24', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
+                <i className="ti ti-device-mobile" style={{ fontSize: 24, color: C.white }} />
+              </div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: '#A16207', marginBottom: 4 }}>{t.donMomo}</div>
+              <div style={{ fontSize: 20, fontWeight: 800, color: C.text, marginBottom: 4 }}>*126#</div>
+              <div style={{ fontSize: 12, color: C.muted }}>N° : 677 57 67 83</div>
+            </div>
+          </div>
+          <div style={{ textAlign: 'center', marginTop: 20 }}>
+            <p style={{ fontSize: 12, color: C.muted, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <i className="ti ti-shield-check" style={{ fontSize: 14, color: C.green }} /> {t.donNote}
+            </p>
+          </div>
+        </div>
+      </section>
+      </Reveal>
+
+      {/* ═══ WHATSAPP FLOTTANT ═══ */}
+      <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lang === 'fr' ? 'Bonjour, je souhaite en savoir plus sur les projets de recherche.' : 'Hello, I would like to know more about research projects.')}`}
+        target="_blank" rel="noopener noreferrer"
+        className="landing-whatsapp-float"
+        title={t.contactWa}
+      >
+        <i className="ti ti-brand-whatsapp" style={{ fontSize: 28 }} />
+      </a>
 
       {/* ═══ FOOTER ═══ */}
       <footer className="landing-footer">
         <div className="landing-footer-inner">
           <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', marginBottom: 16 }}>
-            &copy; 2024 Gestion des Projets de Recherche - Instituts de Recherche du Cameroun. Tous droits réservés.
+            {t.copy}
           </div>
           <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
             {[
@@ -567,7 +685,7 @@ export default function LandingPage() {
               onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.3)'}
             >
               <i className="ti ti-lock" style={{ fontSize: 13 }} />
-              Espace MINRESI
+              {t.espaceMinresi}
             </Link>
           </div>
         </div>
@@ -876,48 +994,70 @@ const landingCSS = `
   align-items: center;
 }
 
+/* ── WhatsApp Float ── */
+.landing-whatsapp-float {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #25D366;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+  z-index: 999;
+  transition: transform .3s, box-shadow .3s;
+  text-decoration: none;
+  animation: landing-wa-pulse 2s infinite;
+}
+.landing-whatsapp-float:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 28px rgba(37,211,102,0.5);
+}
+@keyframes landing-wa-pulse {
+  0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.4); }
+  50% { box-shadow: 0 4px 20px rgba(37,211,102,0.4), 0 0 0 12px rgba(37,211,102,0.15); }
+}
+
 /* ══════ Responsive ══════ */
 @media (max-width: 1024px) {
-  .landing-three-grid {
-    grid-template-columns: 1fr;
-  }
-  .landing-features-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .landing-stats-inner {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .landing-three-grid { grid-template-columns: 1fr; }
+  .landing-features-grid { grid-template-columns: repeat(2, 1fr); }
+  .landing-stats-inner { grid-template-columns: repeat(2, 1fr); }
+  .landing-navbar { padding: 0 16px; }
+  .landing-container { padding: 0 20px; }
 }
 @media (max-width: 768px) {
-  .landing-hero-inner {
-    flex-direction: column;
-    text-align: center;
-  }
-  .landing-hero-left h1 {
-    font-size: 30px !important;
-  }
-  .landing-hero-left p {
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .landing-hero-left > div:last-child {
-    justify-content: center;
-  }
-  .landing-hero-right {
-    justify-content: center;
-  }
-  .landing-hero-img-wrap {
-    max-width: 100%;
-    height: 260px;
-  }
-  .landing-nav-links {
-    display: none;
-  }
-  .landing-features-grid {
-    grid-template-columns: 1fr;
-  }
-  .landing-stats-inner {
-    grid-template-columns: 1fr;
-  }
+  .landing-hero { padding: 80px 16px 40px !important; }
+  .landing-hero-inner { flex-direction: column; text-align: center; gap: 32px !important; }
+  .landing-hero-left h1 { font-size: 28px !important; }
+  .landing-hero-left p { margin-left: auto; margin-right: auto; font-size: 14px !important; }
+  .landing-hero-left > div:last-child { justify-content: center; }
+  .landing-hero-right { justify-content: center; }
+  .landing-hero-img-wrap { max-width: 100%; height: 240px; }
+  .landing-hero-quote { bottom: 10px; left: 10px; right: 10px; padding: 12px 14px; }
+  .landing-nav-links { display: none; }
+  .landing-features-grid { grid-template-columns: 1fr; }
+  .landing-stats-inner { grid-template-columns: repeat(2, 1fr); }
+  .landing-stat-card { padding: 16px; }
+  .landing-stat-card div:last-child > div:first-child { font-size: 22px !important; }
+  .landing-cta { padding: 48px 20px !important; }
+  .landing-cta-inner h2 { font-size: 22px !important; }
+  .landing-collab { padding: 40px 20px !important; }
+  .landing-footer { padding: 32px 20px; }
+  .landing-whatsapp-float { width: 52px; height: 52px; bottom: 16px; right: 16px; }
+  .landing-whatsapp-float i { font-size: 24px !important; }
+}
+@media (max-width: 480px) {
+  .landing-hero-left h1 { font-size: 24px !important; }
+  .landing-stats-inner { grid-template-columns: 1fr; }
+  .landing-hero-img-wrap { height: 200px; }
+  .landing-btn-green, .landing-btn-outline { width: 100%; justify-content: center; text-align: center; }
+  .landing-search-bar { flex-direction: column; border: none; gap: 8px; }
+  .landing-search-bar input { border: 2px solid #E5E7EB !important; border-radius: 12px !important; }
+  .landing-search-bar button { border-radius: 12px !important; width: 100%; }
 }
 `
