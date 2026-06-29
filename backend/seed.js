@@ -6,6 +6,7 @@ const User = require('./models/User');
 const Institute = require('./models/Institute');
 const Project = require('./models/Project');
 const Researcher = require('./models/Researcher');
+const Innovation = require('./models/Innovation');
 
 // ══════════════════════════════════════════════════════
 //  DONNÉES RÉELLES — MINRESI Cameroun
@@ -417,6 +418,15 @@ const PROJECTS = [
   },
 ];
 
+const INNOVATIONS = [
+  { nom: "Agri'Smart", description: "Application mobile d'aide à la décision pour le conseil agricole. Recommandations personnalisées basées sur les données locales de sol et climat.", domaine: 'Agriculture', image: '/innovation-1.png', auteur: 'Team AgriTech — IRAD', inst: 'IRAD' },
+  { nom: 'MedSahara', description: "Dispositif de diagnostic médical portable alimenté par énergie solaire. Permet des analyses biologiques de base en zone rurale sans électricité.", domaine: 'Santé', image: '/innovation-2.png', auteur: 'Équipe Santé Numérique — IMPM', inst: 'IMPM' },
+  { nom: 'EcoBrique', description: "Brique écologique à base de matériaux locaux (latérite stabilisée). Réduit de 40% le coût de construction des logements sociaux.", domaine: 'Matériaux', image: '/innovation-3.png', auteur: 'Labo Matériaux — MIPROMALO', inst: 'MIPROMALO' },
+  { nom: 'GéoRisk Map', description: "Plateforme web de cartographie des risques naturels (inondations, glissements de terrain, séismes) pour la prévention des catastrophes.", domaine: 'Géologie', image: '', auteur: 'Cellule SIG — IRGM', inst: 'IRGM' },
+  { nom: 'SolarVillage', description: "Kit solaire modulaire pour l'électrification des villages ruraux. Installation en 48h, autonomie complète, maintenance simplifiée.", domaine: 'Technologie', image: '', auteur: 'Programme EnR — CNDT', inst: 'CNDT' },
+  { nom: 'EduCam 360', description: "Plateforme numérique d'apprentissage adaptatif pour les écoles primaires et secondaires, compatible hors-ligne.", domaine: 'Éducation', image: '', auteur: 'Équipe EdTech — CNE', inst: 'CNE' },
+];
+
 // ══════════════════════════════════════════════════════
 //  EXÉCUTION DU SEED
 // ══════════════════════════════════════════════════════
@@ -523,6 +533,19 @@ const PROJECTS = [
       console.log(`  + ${code} — ${p.intitule.substring(0, 65)}...`);
     }
 
+    // ── 5. Innovations ──
+    console.log('\n══ INNOVATIONS ══');
+    await Innovation.deleteMany({});
+    for (const inn of INNOVATIONS) {
+      await Innovation.create({
+        nom: inn.nom, description: inn.description, domaine: inn.domaine,
+        image: inn.image, auteur: inn.auteur,
+        institute: inn.inst ? iMap[inn.inst] : null,
+        statut: 'publie', actif: true,
+      });
+      console.log(`  + ${inn.nom} — ${inn.domaine}`);
+    }
+
     // ── Résumé ──
     console.log('\n══════════════════════════════════════════');
     console.log('  ✅ SEED TERMINÉ AVEC SUCCÈS !');
@@ -531,6 +554,7 @@ const PROJECTS = [
     console.log(`  ${USERS.length} utilisateurs`);
     console.log(`  ${RESEARCHERS.length} chercheurs`);
     console.log(`  ${PROJECTS.length} projets de recherche`);
+    console.log(`  ${INNOVATIONS.length} innovations`);
     console.log('\n── Comptes ──');
     console.log('  🔑 noutchangyvana@gmail.com / Yvana2026   → DEV (accès total)');
     console.log('  👤 admin@minresi.cm / admin123             → Admin');

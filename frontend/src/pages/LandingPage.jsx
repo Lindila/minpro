@@ -181,7 +181,7 @@ export default function LandingPage() {
   const [search, setSearch] = useState('')
   const [heroSlide, setHeroSlide] = useState(0)
   const [lang, setLang] = useState('fr')
-  const [data, setData] = useState({ institutes: [], recentProjects: [], stats: { projects: 0, institutes: 0, researchers: 0, innovations: 0 } })
+  const [data, setData] = useState({ institutes: [], recentProjects: [], innovations: [], stats: { projects: 0, institutes: 0, researchers: 0, innovations: 0 } })
   const innovRef = useRef(null)
   const t = T[lang]
 
@@ -384,20 +384,20 @@ export default function LandingPage() {
             </div>
           </div>
           <div ref={innovRef} className="landing-innov-scroll" style={{ gap: 20, paddingBottom: 12 }}>
-            {INNOVATIONS.map((inn, i) => (
-              <div key={i} className="landing-innov-card" style={{ minWidth: 280, maxWidth: 320, padding: 0, overflow: 'hidden' }}>
-                <div style={{ width: '100%', height: 180, position: 'relative', overflow: 'hidden' }}>
-                  <img src={`/innovation-${i + 1}.png`} alt={inn.name} onError={imgFallback}
-                       style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            {data.innovations.map((inn, i) => (
+              <div key={inn._id || i} className="landing-innov-card" style={{ minWidth: 280, maxWidth: 320, padding: 0, overflow: 'hidden' }}>
+                <div style={{ width: '100%', height: 180, position: 'relative', overflow: 'hidden', background: C.lightGreen }}>
+                  {inn.image && <img src={inn.image} alt={inn.nom} onError={imgFallback} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+                  {!inn.image && <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><i className="ti ti-bulb" style={{ fontSize: 48, color: `${C.green}44` }} /></div>}
                   <div style={{ position: 'absolute', bottom: 10, left: 10 }}>
-                    <span style={{ fontSize: 11, fontWeight: 600, padding: '4px 12px', borderRadius: 20, background: 'rgba(255,255,255,.9)', color: (DOMAIN_COLORS[inn.domain] || DOMAIN_COLORS.Agriculture).text }}>
-                      {inn.domain}
+                    <span style={{ fontSize: 11, fontWeight: 600, padding: '4px 12px', borderRadius: 20, background: 'rgba(255,255,255,.9)', color: (DOMAIN_COLORS[inn.domaine] || DOMAIN_COLORS.Agriculture).text }}>
+                      {inn.domaine}
                     </span>
                   </div>
                 </div>
                 <div style={{ padding: '16px 18px' }}>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 6 }}>{inn.name}</div>
-                  <div style={{ fontSize: 13, color: C.muted, lineHeight: 1.5 }}>{inn.desc}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: C.text, marginBottom: 6 }}>{inn.nom}</div>
+                  <div style={{ fontSize: 13, color: C.muted, lineHeight: 1.5 }}>{inn.description}</div>
                 </div>
               </div>
             ))}
