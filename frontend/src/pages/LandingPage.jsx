@@ -1,32 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-
-/* ── Hardcoded preview data ── */
-const PROJECTS = [
-  { title: 'Amélioration des variétés de cacao résistantes', domain: 'Agriculture', year: 2025, institute: 'IRAD' },
-  { title: 'Plantes médicinales contre le paludisme résistant', domain: 'Santé', year: 2025, institute: 'IMPM' },
-  { title: 'Technologies solaires pour l\'électrification rurale', domain: 'Technologie', year: 2025, institute: 'CNDT' },
-]
-
-const INSTITUTES = [
-  { sigle: 'IRAD', nom: 'Institut de Recherche Agricole pour le Développement', domaines: 'Agriculture, Agroalimentaire, Environnement' },
-  { sigle: 'IMPM', nom: 'Institut de Recherches Médicales et d\'Études des Plantes Médicinales', domaines: 'Santé, Pharmacologie, Plantes médicinales' },
-  { sigle: 'IRGM', nom: 'Institut de Recherches Géologiques et Minières', domaines: 'Géologie, Mines, Ressources minérales' },
-  { sigle: 'INC',  nom: 'Institut National de Cartographie', domaines: 'Cartographie, Télédétection, SIG' },
-]
-
-const INNOVATIONS = [
-  { name: 'Agri\'Smart', desc: 'Application mobile pour le conseil agricole', domain: 'Agriculture' },
-  { name: 'MedSahara', desc: 'Dispositif de diagnostic médical portable', domain: 'Santé' },
-  { name: 'EcoBrique', desc: 'Brique écologique à base de matériaux locaux', domain: 'Environnement' },
-]
-
-const STATS = [
-  { icon: 'ti-folder',      value: '256+', label: 'Projets de recherche' },
-  { icon: 'ti-building',    value: '18',   label: 'Instituts de recherche' },
-  { icon: 'ti-bulb',        value: '134+', label: 'Innovations' },
-  { icon: 'ti-users-group', value: '850+', label: 'Chercheurs impliqués' },
-]
+import { getLandingData } from '../api/public.api'
 
 const HERO_SLIDES = [
   { img: '/innovation-1.png', alt: 'Innovation agricole — Agri\'Smart' },
@@ -207,8 +181,13 @@ export default function LandingPage() {
   const [search, setSearch] = useState('')
   const [heroSlide, setHeroSlide] = useState(0)
   const [lang, setLang] = useState('fr')
+  const [data, setData] = useState({ institutes: [], recentProjects: [], stats: { projects: 0, institutes: 0, researchers: 0, innovations: 0 } })
   const innovRef = useRef(null)
   const t = T[lang]
+
+  useEffect(() => {
+    getLandingData().then(r => setData(r.data.data)).catch(() => {})
+  }, [])
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -336,7 +315,12 @@ export default function LandingPage() {
       {/* ═══ STATS ═══ */}
       <section className="landing-stats">
         <div className="landing-stats-inner">
-          {STATS.map((s, i) => (
+          {[
+            { icon: 'ti-folder',      value: String(data.stats.projects) + '+' },
+            { icon: 'ti-building',    value: String(data.stats.institutes) },
+            { icon: 'ti-bulb',        value: String(data.stats.innovations) + '+' },
+            { icon: 'ti-users-group', value: String(data.stats.researchers) + '+' },
+          ].map((s, i) => (
             <Reveal key={i} delay={i * 0.1}>
               <div className="landing-stat-card">
                 <div style={{
@@ -434,8 +418,8 @@ export default function LandingPage() {
             <p style={{ fontSize: 14, color: C.muted }}>{t.projSub}</p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 20 }}>
-            {PROJECTS.map((p, i) => (
-              <Reveal key={i} delay={i * 0.1}>
+            {data.recentProjects.map((p, i) => (
+              <Reveal key={p._id || i} delay={i * 0.1}>
               <div style={{ background: C.white, borderRadius: 16, padding: 24, border: `1px solid ${C.border}`, transition: 'transform .2s, box-shadow .2s', cursor: 'pointer' }}
                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 12px 32px rgba(27,77,62,.1)' }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
@@ -445,11 +429,11 @@ export default function LandingPage() {
                     <i className="ti ti-flask" style={{ fontSize: 24, color: C.green }} />
                   </div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 8, lineHeight: 1.4 }}>{p.title}</div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 8, lineHeight: 1.4 }}>{p.intitule}</div>
                     <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
-                      <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 12px', borderRadius: 20, background: (DOMAIN_COLORS[p.domain] || DOMAIN_COLORS.Agriculture).bg, color: (DOMAIN_COLORS[p.domain] || DOMAIN_COLORS.Agriculture).text }}>{p.domain}</span>
-                      <span style={{ fontSize: 12, color: C.muted }}><i className="ti ti-calendar" style={{ fontSize: 13, marginRight: 4 }} />{p.year}</span>
-                      <span style={{ fontSize: 12, color: C.green, fontWeight: 600 }}>{p.institute}</span>
+                      <span style={{ fontSize: 11, fontWeight: 600, padding: '3px 12px', borderRadius: 20, background: (DOMAIN_COLORS[p.domaine] || DOMAIN_COLORS.Agriculture).bg, color: (DOMAIN_COLORS[p.domaine] || DOMAIN_COLORS.Agriculture).text }}>{p.domaine}</span>
+                      <span style={{ fontSize: 12, color: C.muted }}><i className="ti ti-calendar" style={{ fontSize: 13, marginRight: 4 }} />{new Date(p.dateDebut).getFullYear()}</span>
+                      <span style={{ fontSize: 12, color: C.green, fontWeight: 600 }}>{p.institute?.sigle || ''}</span>
                     </div>
                   </div>
                 </div>
@@ -478,13 +462,8 @@ export default function LandingPage() {
             <p style={{ fontSize: 14, color: C.muted }}>{t.instSub}</p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
-            {[...INSTITUTES,
-              { sigle: 'MIPROMALO', nom: 'Mission de Promotion des Matériaux Locaux', domaines: 'Matériaux, Construction, Innovation' },
-              { sigle: 'ANRP', nom: 'Agence Nationale de Radioprotection', domaines: 'Radioprotection, Sûreté nucléaire' },
-              { sigle: 'CNE', nom: "Centre National d'Éducation", domaines: 'Sciences de l\'éducation, Pédagogie' },
-              { sigle: 'CNDT', nom: 'Comité National de Développement des Technologies', domaines: 'Transfert technologique, Innovation' },
-            ].map((inst, i) => (
-              <Reveal key={i} delay={i * 0.05}>
+            {data.institutes.map((inst, i) => (
+              <Reveal key={inst._id || i} delay={i * 0.05}>
               <div style={{ background: '#F9FAFB', borderRadius: 14, padding: '20px 22px', border: `1px solid ${C.border}`, display: 'flex', gap: 14, alignItems: 'center', transition: 'transform .2s, box-shadow .2s' }}
                 onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(27,77,62,.08)' }}
                 onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
@@ -495,7 +474,7 @@ export default function LandingPage() {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 14, fontWeight: 700, color: C.green }}>{inst.sigle}</div>
                   <div style={{ fontSize: 12, color: C.text, lineHeight: 1.3, marginBottom: 3 }}>{inst.nom}</div>
-                  <div style={{ fontSize: 11, color: C.muted }}>{inst.domaines}</div>
+                  <div style={{ fontSize: 11, color: C.muted }}>{inst.domaine}</div>
                 </div>
               </div>
               </Reveal>
@@ -602,28 +581,34 @@ export default function LandingPage() {
             <p style={{ fontSize: 15, color: C.muted, maxWidth: 520, margin: '0 auto', lineHeight: 1.6 }}>{t.donSub}</p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 20, maxWidth: 600, margin: '0 auto' }}>
-            <div style={{ background: '#FFF7ED', borderRadius: 16, padding: '28px 24px', border: '1px solid #FDBA74', textAlign: 'center', transition: 'transform .2s' }}
-              onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-4px)'}
-              onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+            <a href="tel:%23150%2A1%2A1%23" style={{ background: '#FFF7ED', borderRadius: 16, padding: '28px 24px', border: '1px solid #FDBA74', textAlign: 'center', transition: 'transform .2s, box-shadow .2s', textDecoration: 'none', display: 'block', cursor: 'pointer' }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(255,102,0,.15)' }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
             >
               <div style={{ width: 48, height: 48, borderRadius: 12, background: '#FF6600', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
                 <i className="ti ti-device-mobile" style={{ fontSize: 24, color: C.white }} />
               </div>
               <div style={{ fontSize: 16, fontWeight: 700, color: '#EA580C', marginBottom: 4 }}>{t.donOm}</div>
               <div style={{ fontSize: 20, fontWeight: 800, color: C.text, marginBottom: 4 }}>#150*1*1#</div>
-              <div style={{ fontSize: 12, color: C.muted }}>N° : 688 01 51 88</div>
-            </div>
-            <div style={{ background: '#FEFCE8', borderRadius: 16, padding: '28px 24px', border: '1px solid #FDE047', textAlign: 'center', transition: 'transform .2s' }}
-              onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-4px)'}
-              onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
+              <div style={{ fontSize: 12, color: C.muted }}>N° : 688 015 188</div>
+              <div style={{ marginTop: 12, fontSize: 13, fontWeight: 600, color: '#FF6600', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                <i className="ti ti-phone-call" style={{ fontSize: 16 }} /> {lang === 'fr' ? 'Composer maintenant' : 'Dial now'}
+              </div>
+            </a>
+            <a href="tel:%2A126%23" style={{ background: '#FEFCE8', borderRadius: 16, padding: '28px 24px', border: '1px solid #FDE047', textAlign: 'center', transition: 'transform .2s, box-shadow .2s', textDecoration: 'none', display: 'block', cursor: 'pointer' }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(251,191,36,.15)' }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
             >
               <div style={{ width: 48, height: 48, borderRadius: 12, background: '#FBBF24', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
                 <i className="ti ti-device-mobile" style={{ fontSize: 24, color: C.white }} />
               </div>
               <div style={{ fontSize: 16, fontWeight: 700, color: '#A16207', marginBottom: 4 }}>{t.donMomo}</div>
               <div style={{ fontSize: 20, fontWeight: 800, color: C.text, marginBottom: 4 }}>*126#</div>
-              <div style={{ fontSize: 12, color: C.muted }}>N° : 677 57 67 83</div>
-            </div>
+              <div style={{ fontSize: 12, color: C.muted }}>N° : 677 576 783</div>
+              <div style={{ marginTop: 12, fontSize: 13, fontWeight: 600, color: '#D97706', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                <i className="ti ti-phone-call" style={{ fontSize: 16 }} /> {lang === 'fr' ? 'Composer maintenant' : 'Dial now'}
+              </div>
+            </a>
           </div>
           <div style={{ textAlign: 'center', marginTop: 20 }}>
             <p style={{ fontSize: 12, color: C.muted, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>

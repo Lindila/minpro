@@ -20,6 +20,7 @@ app.use('/api/users',       require('./routes/user.routes'));
 app.use('/api/researchers', require('./routes/researcher.routes'));
 app.use('/api/institutes',  require('./routes/institute.routes'));
 app.use('/api/activities',  require('./routes/activity.routes'));
+app.use('/api/public',      require('./routes/public.routes'));
 
 // Health check
 app.get('/api/health', (_req, res) => res.json({ status: 'OK', app: 'SIGPRO-MINRESI API' }));
